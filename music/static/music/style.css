@@ -1,0 +1,36 @@
+img{
+  height: 250px;
+  width: 250px;
+}
+
+body{
+  background: url("images/background.jpg");
+  margin: 10px 10px 10px 10px;
+}
+
+ul{
+  color: darkgreen;
+}
+
+#dave-icon{
+  height: 25px;
+  width: 25px;
+}
+
+.navbar{
+    border-radius:0;
+}
+
+.navbar-brand{
+    font-family: 'Satisfy', cursive;     /*second arg is the back up if satisfy doesn't load*/
+    font-size: xx-large;
+}
+
+input[type=submit]{
+  background-color: lightpink;
+  padding: 5px;
+  color: black;
+  width: 100%
+  border: 1px solid black;
+  border-radius: 4px;
+}

@@ -1,0 +1,23 @@
+
+{% extends 'music/base.html' %}
+
+{% block body %}
+
+    <title>   {% block title %} Pet Songs {% endblock %} </title>
+    <img src="{{album.album_logo}}">
+
+    <h1> {{album.album_title}} </h1>
+    <h3> {{album.artist}} </h3>
+    <br>
+
+    <div id="bottom">
+        {% if error_message %}
+            <p><strong>{{ error_message }}</strong></p>
+        {% endif %}
+
+
+        <li><a href="/music/">Home</a></li>
+        <li><a href="/admin/">Admin</a></li>
+    </div>
+
+{% endblock %}
