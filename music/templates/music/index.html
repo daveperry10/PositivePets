@@ -11,7 +11,7 @@
             {% for album in album_list %}
                 <br>
                 <div class="col-md-4">
-                    <img src="{{album.album_logo.url}}">
+                    <img src="{{album.album_logo.url}}" class="img-responsive">
                     <h2> {{ album.album_title }} </h2>
 
                     <a href="{% url 'music:detail' album.id %}" class="btn btn-primary btn-sm"> View Details </a>
