@@ -12,6 +12,22 @@ ul{
   color: darkgreen;
 }
 
+.dave{
+    color: green;
+    vertical-align: center;
+}
+
+.icon{
+  height: 50px;
+  width: 50px;
+  padding: 0 15px 15px 0;
+}
+
+.petpicture{
+  width: 100%;
+  object-fit: cover;
+}
+
 #dave-icon{
   height: 25px;
   width: 25px;
@@ -22,7 +38,7 @@ ul{
 }
 
 .navbar-brand{
-    font-family: 'Satisfy', cursive;     /*second arg is the back up if satisfy doesn't load*/
+    font-family: cursive;     /*old code:  font-family: 'Satisfy', cursive; second arg is the back up if 'Satisfy' doesn't load*/
     font-size: xx-large;
 }
 

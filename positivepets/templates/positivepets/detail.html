@@ -1,16 +1,15 @@
 
-{% extends 'music/base.html' %}
+{% extends 'positivepets/base.html' %}
 
 {% block body %}
 
     <title>   {% block title %} Pet Songs {% endblock %} </title>
 
+    <img src="{{pet.picture.url}}" class="img-responsive">
 
-    <img src="{{album.album_logo.url}}" class="img-responsive">
-
-    <h1> {{album.album_title}} </h1>
-    <h3> {{album.artist}} </h3>
-    <br>
+    <h1> {{pet.name}} </h1>
+    <h3> {{pet.type}} </h3>
+    <h3> {{pet.breed}} </h3> <br>
 
     <div id="bottom">
         {% if error_message %}
@@ -18,7 +17,7 @@
         {% endif %}
 
 
-        <li><a href="/music/">Home</a></li>
+        <li><a href="/positivepets/">Home</a></li>
         <li><a href="/admin/">Admin</a></li>
     </div>
 

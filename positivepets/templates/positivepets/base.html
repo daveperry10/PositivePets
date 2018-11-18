@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="{% static 'music/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'positivepets/style.css' %}" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  ></script>
 </head>
@@ -26,14 +26,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'music:index' %}">PositivePets</a>
+            <a class="navbar-brand" href="{% url 'positivepets:index' %}">PositivePets</a>
         </div>
 
         <!-- Items -->
         <div class="collapse navbar-collapse" id="topNavBar">
             <ul class="nav navbar-nav">
                 <li class="">
-                    <a href="{% url 'music:index' %}">
+                    <a href="{% url 'positivepets:index' %}">
                         <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>&nbsp; Pet Pictures
                     </a>
                 </li>
@@ -55,8 +55,8 @@
 
             <ul class="nav navbar-nav">
                 <li class="">
-                    <a href="{% url 'music:album-add' %}">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Album
+                    <a href="{% url 'positivepets:pet-add' %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Pet
                     </a>
                 </li>
                 <li class="">
@@ -70,6 +70,9 @@
 </nav>
 
 {% block body %}
+{% endblock %}
+
+{% block footer %}
 {% endblock %}
 </body>
 </html>

@@ -1,0 +1,37 @@
+
+{% extends 'positivepets/base.html' %}
+
+{% block body %}
+
+    <title>   {% block title %} Test Page {% endblock %} </title>
+    <div> {{user_name | capfirst}} </div>
+    <div> {{user_name | capfirst}} </div> <br>
+
+    <span> {{daisies}} {{daisies | pluralize:"daisy, daisies"}} </span><br>
+
+    <span>  {% if years < 10 %}
+                You are a child age {{years}}
+            {% elif years < 18 %}
+                You are a teenager age {{years}}
+            {% else %}
+                You are an adult age {{years}}
+        {% endif %}
+    </span>
+
+    <div>
+        <br>
+        {% for city in array_city %}
+            <span> {{ city }} </span>
+        {% endfor %}
+        <br><br>
+    </div>
+
+
+   <a href="{% url 'positivepets:index' %}">Home</a>
+   <a href="{% url 'positivepets:ben-list' %}">Bens List</a>
+
+{% endblock %}
+
+{% block footer %}
+    <br><br>Copyright Dave Perry
+{% endblock %}

@@ -1,7 +1,7 @@
 <! -- name must be named "modelname_form"
 
-{% extends 'music/base.html' %}
-{% block title %} Add a New Album {% endblock %}
+{% extends 'positivepets/base.html' %}
+{% block title %} Add a New Pet {% endblock %}
 {% block albums_active %} active {% endblock %}
 
 {% block body %}
@@ -15,7 +15,7 @@
 
                     <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {% include 'music/form-template.html' %}
+                        {% include 'positivepets/form-template.html' %}
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <button type="submit" class="btn btn-success">Submit</button>

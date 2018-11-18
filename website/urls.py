@@ -1,4 +1,4 @@
-"""website URL Configuration
+"""websiteproject URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -20,8 +20,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    #url(r'^$', include('positivepets.urls')),
     url(r'^admin/', admin.site.urls),  #older
-    url(r'^music/', include('music.urls')),
+    url(r'^positivepets/', include('positivepets.urls')),
 ]
 
 if settings.DEBUG:
