@@ -6,23 +6,18 @@
 
 {% load staticfiles %}
 
-    <span> You are logged in as:
-        <b> {{user | capfirst}} </b>
-    </span>
-
     <div class="dave">
         <h3>Pet Owners</h3>
         <br>
     </div>
 
-
     <div class="container-2">
         {% for u in user_list %}
             {% if u.username != "admin" %}
-                 <a href="{% url 'positivepets:user-list' u.id %}" >
+                 <a href="{% url 'positivepets:user-pets' u.id %}" >
                     <div class="row">
                         <div class="col-sm-1">
-                                <img src="{% static 'positivepets/images/star_icon.jpg' %}" class="icon">
+                                <img src="{{u.picture.url}}" class="icon">
                         </div>
                         <div class="col-sm-2">
 
@@ -42,13 +37,14 @@
     </div>
 
     <br> <br>
-    <a href="{% url 'positivepets:test_view' %}">Test</a>  &nbsp;
-    <a href="{% url 'positivepets:register' %}">Register</a>  &nbsp;
-      &nbsp;
-    <a href="/admin/">Admin</a>
+
+    {% if user.username == "admin" %}
+        <a href="{% url 'positivepets:test_view' %}"> Test </a>  &nbsp;&nbsp;
+        <a href="/admin/">Admin</a>
+    {% endif %}
 
 {% endblock %}
 
 {% block footer %}
-    <br><br>Copyright Dave Perry
+
 {% endblock %}

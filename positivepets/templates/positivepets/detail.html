@@ -3,22 +3,38 @@
 
 {% block body %}
 
-    <title>   {% block title %} Pet Songs {% endblock %} </title>
+    <title>   {% block title %} Pet Detail {% endblock %} </title>
 
-    <img src="{{pet.picture.url}}" class="img-responsive">
+    <div class="container">
+        <div class="row-md-4">
+            <div class="col-md-4">
+                <img src="{{pet.picture.url}}" class="img-responsive">
+                <h1> {{pet.name}} </h1>
+                <h3> {{pet.type}} {% if pet.breed %} ({{pet.breed}}) {% endif %} </h3> <br>
+            </div>
 
-    <h1> {{pet.name}} </h1>
-    <h3> {{pet.type}} </h3>
-    <h3> {{pet.breed}} </h3> <br>
+            <div class="col-md-4">
+                <b> Here is some information about {{pet.name}} </b>
 
-    <div id="bottom">
-        {% if error_message %}
-            <p><strong>{{ error_message }}</strong></p>
-        {% endif %}
+                {% if user.id == owner.id %}
+                    <form class="form-horizontal" action="{% url 'positivepets:pet-description' pet.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <textarea name="bigtext" cols="60" rows="15"> {{description}} </textarea>
+                        </div>
 
-
-        <li><a href="/positivepets/">Home</a></li>
-        <li><a href="/admin/">Admin</a></li>
+                        <div>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <br><br>
+                    {{description}}
+                {% endif %}
+            </div>
+        </div>
     </div>
+    <br>
+    <a href="{% url 'positivepets:user-pets' owner.id %}"> Back to {{owner.username | capfirst}}'s Page </a>
 
 {% endblock %}

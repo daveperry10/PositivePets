@@ -1,4 +1,4 @@
-"""websiteproject URL Configuration
+"""website URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -23,6 +23,7 @@ urlpatterns = [
     #url(r'^$', include('positivepets.urls')),
     url(r'^admin/', admin.site.urls),  #older
     url(r'^positivepets/', include('positivepets.urls')),
+    url(r'^accounts/', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:

@@ -31,48 +31,71 @@
 
         <!-- Items -->
         <div class="collapse navbar-collapse" id="topNavBar">
+            {% if user.is_authenticated %}
+                <ul class="nav navbar-nav">
+                    <li class="">
+                        <a href="{% url 'positivepets:index' %}">
+                            <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>&nbsp; Pet Pictures
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{% url 'positivepets:chatmessage-create' %}">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Chat Room
+                        </a>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-left" role="search" method="get" action="#">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="q" value="">
+                    </div>
+
+                    <button type="submit" class="btn btn-default">Search</button>
+                </form>
+            {% endif %}
             <ul class="nav navbar-nav">
-                <li class="">
-                    <a href="{% url 'positivepets:index' %}">
-                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>&nbsp; Pet Pictures
-                    </a>
-                </li>
-
-                <li class="">
-                    <a href="#">
-                        <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp; Pet Songs
-                    </a>
-                </li>
-            </ul>
-
-            <form class="navbar-form navbar-left" role="search" method="get" action="#">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="q" value="">
-                </div>
-
-                <button type="submit" class="btn btn-default">Search</button>
-            </form>
-
-            <ul class="nav navbar-nav">
-                <li class="">
-                    <a href="{% url 'positivepets:pet-add' %}">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Pet
-                    </a>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
-                    </a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="">
+                        <a href="{% url 'positivepets:pet-add' %}">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Pet
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{% url 'logout' %}">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="">
+                        <a href="{% url 'login' %}">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Login
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{% url 'positivepets:register' %}">
+                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp; New User
+                        </a>
+                    </li>
+                {% endif %}
             </ul>>
         </div>
     </div>
 </nav>
-
+{% if user.is_authenticated %}
+    <span> You are logged in as:
+        <b> {{user.username | capfirst}} </b>
+    </span>
+{% else %}
+    <span>
+        <b> Please log in </b>
+    </span>
+{% endif %}
+<br>
 {% block body %}
 {% endblock %}
 
 {% block footer %}
 {% endblock %}
+<br><br>
+    Copyright Dave Perry
 </body>
 </html>

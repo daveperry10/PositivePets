@@ -14,14 +14,11 @@ urlpatterns = [
     # /positivepets/
     url(r'^$', views.IndexView.as_view(), name='index'),
 
-    # /positivepets/register/
-    url(r'^register/$', views.UserFormView.as_view(), name='register'),
-
     # /positivepets/test/
     url(r'^test/$', views.test_view, name='test_view'),
 
     # /positivepets/user/5/
-    url(r'^user/(?P<pk>[0-9]+)/$', views.UserList.as_view(), name='user-list'),
+    url(r'^user/(?P<pk>[0-9]+)/$', views.UserPets.as_view(), name='user-pets'),
 
     # /positivepets/71/    -- don't forget the comma on the end of the line
     url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
@@ -32,8 +29,20 @@ urlpatterns = [
     # /positivepets/pet/2/
     url(r'pet/(?P<pk>[0-9]+)/$', views.PetUpdate.as_view(), name='pet-update'),
 
+    # /positivepets/pet/2/description/
+    url(r'pet/(?P<pk>[0-9]+)/description/$', views.pet_description_view, name='pet-description'),
+
     # /positivepets/pet/2/delete/
     url(r'pet/(?P<pk>[0-9]+)/delete/$', views.PetDelete.as_view(), name='pet-delete'),
+
+    # /positivepets/chatroom/new/
+    url(r'chatroom/new/$', views.ChatMessageCreate.as_view(), name='chatmessage-create'),
+
+    # ADMIN VIEWS #
+
+    # /positivepets/register/
+    url(r'^register/$', views.UserFormView.as_view(), name='register'),
+
 ]
 
 if settings.DEBUG:

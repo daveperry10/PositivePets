@@ -1,5 +1,15 @@
 from django.contrib import admin
-from .models import Pet, Song
+from .models import Pet
+from django.contrib.auth.admin import UserAdmin
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
 
 admin.site.register(Pet)
-admin.site.register(Song)
+
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    list_display = ['email', 'username', 'city', 'picture', 'birthday']
+
+admin.site.register(CustomUser, CustomUserAdmin)

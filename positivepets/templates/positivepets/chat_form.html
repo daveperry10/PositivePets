@@ -1,0 +1,35 @@
+<! -- name must be named "modelname_form"
+
+{% extends 'positivepets/base.html' %}
+{% block title %} Message Board{% endblock %}
+
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-we col-xs-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% include 'positivepets/form-template.html' %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-we col-xs-6">
+
+                    {% for item in comment_list %}
+                        {{item.user.username| capfirst}}: {{item.comment}} <br>
+                    {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -5,7 +5,8 @@
 
     <title>   {% block title %} Test Page {% endblock %} </title>
     <div> {{user_name | capfirst}} </div>
-    <div> {{user_name | capfirst}} </div> <br>
+    <div> {{testy}} </div> <br>
+
 
     <span> {{daisies}} {{daisies | pluralize:"daisy, daisies"}} </span><br>
 
@@ -28,7 +29,6 @@
 
 
    <a href="{% url 'positivepets:index' %}">Home</a>
-   <a href="{% url 'positivepets:ben-list' %}">Bens List</a>
 
 {% endblock %}
 
