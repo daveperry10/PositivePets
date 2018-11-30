@@ -1,7 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Chat, Pet
-from django import forms
-
+from .models import Chat, Pet, Mail
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -30,7 +28,18 @@ class ChatMessageForm(forms.ModelForm):
         model = Chat
         fields = ['comment']
 
+class MailForm(forms.ModelForm):
+   class Meta:
+        model = Mail
+        fields = ['message', 'subject']
+
 class PetDescriptionForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['description']
+
+class CustomUserChangePictureForm(forms.Form):
+    file = forms.FileField()
+    # class Meta:
+    #     model = CustomUser
+    #     fields = ['picture']

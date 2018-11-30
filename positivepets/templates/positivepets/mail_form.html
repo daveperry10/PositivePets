@@ -1,0 +1,93 @@
+<! -- name must be named "modelname_form"
+
+{% extends 'positivepets/base.html' %}
+{% block title %} Pet Mail {% endblock %}
+
+
+{% block body %}
+<div class="container-fluid">
+    <span style="font-size:20pt;"> Welcome to Email! </span>
+    <span style="font-size:12pt; color:red;">These are messages for people you choose </span>
+    <div class="row">
+        <div class="col-sm-we col-sm-6">
+            <h4>Compose Message</h4>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="recipients" class="col-sm-2 control-label">To:</label>
+                            <div class="col-sm-10">
+                                <select multiple class="form-control" id="recipients" name="recipients">
+                                      {% for u in user_list %}
+                                          <option> {{u.username | capfirst}} </option>
+                                      {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="col-sm-2 control-label">Subject:</label>
+                            <div class="col-sm-10">
+                                <input name="subject" type="text" class="form-control" id="subject" placeholder="Enter Subject">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="col-sm-2 control-label">Message:</label>
+                            <div class="col-sm-10">
+                                <textarea name="message" id="message" placeholder="Enter Email Message"> </textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <! INBOX >
+        <div class="col-sm-we col-sm-6">
+            <h4>Inbox</h4>
+            <table class="table table-hover table-bordered table-condensed table-responsive">
+                <thead style="background-color: lightgray">
+                      <tr>
+                          <th>Status</th>
+                          <th><font size="2">Picture</font></th>
+                          <th><font size="2">From</font></th>
+                          <th><font size="2">Subject</font></th>
+                          <th><font size="2">Time</font></th>
+                      </tr>
+                </thead>
+                 <tbody>
+                {% for msg in inbox %}
+
+                     <tr>
+                         <td>
+                             <form class="form-inline" action="{% url 'positivepets:mail_view' forloop.counter0 %}" method="post">
+                                {% csrf_token %}
+                                {% if msg.status == 1 %}
+                                    <button type="submit" name="button" class="btn btn-success btn-sm">New</button>
+                                {% else %}
+                                    <button type="submit" name="button" class="btn btn-default btn-sm">Read</button>
+                                {% endif %}
+                             </form>
+                         </td>
+                         <td> <img src="{{msg.sender.picture.url}}" style="width:30px;height:30px;"></td>
+                         <td><font size="2">{{msg.sender.username|capfirst}}</font></td>
+                         <td><font size="2">{{msg.subject}}</font></td>
+                         <td><font size="2">{{msg.timestamp|date:"SHORT_DATE_FORMAT"}}</font></td>
+                     </tr>
+
+                {% endfor %}
+            </table>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

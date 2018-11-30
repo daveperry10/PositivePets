@@ -3,6 +3,42 @@
 
 {% block body %}
 
+<div class="container">
+
+   <h2>Container class</h2>
+
+   <div class="row">
+
+       <div class="col-sm-5" style="background-color: #dedef8;box-shadow:inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+          <div class="row">
+              <div class="col-sm-3" style="background-color: #B18904;box-shadow:inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+                  <p> new row, col 1 </p>
+              </div>
+              <div class="col-sm-9" style="box-shadow:inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+                  <p> col 2 </p>
+              </div>
+          </div>
+           <div class="row">
+              <div class="col-sm-3" style="background-color: #B18904;box-shadow:inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+                  <p> new row, col 1 </p>
+              </div>
+              <div class="col-sm-9" style="box-shadow:inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+                  <p> col 2 </p>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-md-7" style="background-color: #dedef8;box-shadow:inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+          <h4>col 3 hdr</h4>
+          <p>col 3</p>
+      </div>
+
+
+   </div>
+
+</div>
+
+
     <title>   {% block title %} Test Page {% endblock %} </title>
     <div> {{user_name | capfirst}} </div>
     <div> {{testy}} </div> <br>

@@ -1,6 +1,14 @@
+
 img{
   height: 250px;
   width: 250px;
+}
+.table-condensed{
+  font-size: 12px;
+}
+
+.dp-pad{
+  margin: 10px;
 }
 
 body{
@@ -8,24 +16,13 @@ body{
   margin: 10px 10px 10px 10px;
 }
 
-ul{
-  color: darkgreen;
-}
-
-.dave{
-    color: green;
-    vertical-align: center;
+.yellow{
+color: yellow;
 }
 
 .icon{
   height: 60px;
   width: 60px;
-  padding: 0 15px 15px 0;
-}
-
-.big-icon{
-  height: 75px;
-  width: 75px;
   padding: 0 15px 15px 0;
 }
 

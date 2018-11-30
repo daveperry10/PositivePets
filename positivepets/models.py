@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     # add additional fields in here
     #objects = MyManager
     city = models.CharField(max_length=250, null=True)
-    picture = models.ImageField(null=True)
+    picture = models.FileField(upload_to='media/', blank=True, null=True)
     birthday = models.DateField(null=True)
     #picture = models.ImageField('picture', upload_to='/media/', null=True, blank=True)
 
@@ -28,7 +28,7 @@ class Pet(models.Model):
     description = models.CharField(max_length=250, blank=True, null=True)
 
     def get_absolute_url(self):
-        return reverse('positivepets:detail', kwargs={'pk': self.pk})
+        return reverse('positivepets:detail', kwargs={'pk': self.pk, 'edit': '0'})
 
     def __str__(self):
         return self.name
@@ -39,7 +39,22 @@ class Chat(models.Model):
     timestamp = models.DateTimeField()
 
     def get_absolute_url(self):
-        return reverse('positivepets:chatmessage-create')
+        return reverse('positivepets:chatmessage_create')
 
     def __str__(self):
-        return self.song_title
+        return self.comment
+
+class Mail(models.Model):
+    msg_id = models.IntegerField(default=0)
+    timestamp = models.DateTimeField()
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=0,  related_name='as_sender')
+    recipient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=0, related_name='as_recipient')
+    status = models.IntegerField(default=0)
+    subject = models.CharField(max_length=100, null=True, blank=True)
+    message = models.CharField(max_length=500, null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('positivepets:mail_create')
+
+    def __str__(self):
+        return self.message

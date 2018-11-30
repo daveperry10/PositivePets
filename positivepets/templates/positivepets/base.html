@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>   {% block title %} PositivePets {% endblock %} </title>
 
     {% load staticfiles %}
@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'positivepets/style.css' %}" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  ></script>
+
 </head>
 
 <body>
@@ -34,28 +35,33 @@
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav">
                     <li class="">
-                        <a href="{% url 'positivepets:index' %}">
-                            <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>&nbsp; Pet Pictures
+                        <a href="{% url 'positivepets:mail_create' %}">
+                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp; Email
                         </a>
                     </li>
                     <li class="">
-                        <a href="{% url 'positivepets:chatmessage-create' %}">
+                        <a href="{% url 'positivepets:chatmessage_create' %}">
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Chat Room
                         </a>
                     </li>
                 </ul>
-                <form class="navbar-form navbar-left" role="search" method="get" action="#">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="q" value="">
-                    </div>
 
-                    <button type="submit" class="btn btn-default">Search</button>
-                </form>
+                {% if 0 %}
+                    <form class="navbar-form navbar-left" role="search" method="get" action="#">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="q" value="">
+                        </div>
+
+                        <button type="submit" class="btn btn-default">Search</button>
+                    </form>
+                {% endif %}
+
             {% endif %}
+
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
                     <li class="">
-                        <a href="{% url 'positivepets:pet-add' %}">
+                        <a href="{% url 'positivepets:pet_add' %}">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Pet
                         </a>
                     </li>
@@ -65,6 +71,7 @@
                         </a>
                     </li>
                 {% else %}
+
                     <li class="">
                         <a href="{% url 'login' %}">
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Login
@@ -76,10 +83,33 @@
                         </a>
                     </li>
                 {% endif %}
+                <li class="">
+                    <a href="{% url 'positivepets:about' %}">
+                        <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span>&nbsp; About
+                    </a>
+                </li>
+                <li>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'positivepets:user_pets' user.id %}">
+                            <span> Hello {{user.username | capfirst}}! </span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}">
+                            <span> <b> Please log in </b> </span>
+                        </a>
+                    {% endif %}
+
+                </li>
             </ul>>
         </div>
     </div>
 </nav>
+
+
+{% block body %}
+{% endblock %}
+
+<br><br>
 {% if user.is_authenticated %}
     <span> You are logged in as:
         <b> {{user.username | capfirst}} </b>
@@ -89,13 +119,8 @@
         <b> Please log in </b>
     </span>
 {% endif %}
-<br>
-{% block body %}
-{% endblock %}
 
-{% block footer %}
-{% endblock %}
-<br><br>
-    Copyright Dave Perry
+<br>Copyright Dave Perry 2018
+
 </body>
 </html>
