@@ -15,6 +15,6 @@ def chat_message_create(request):
 
     now = datetime.now()
 
-    context = {'comment_list': comment_list,'user':request.user, 'now': now}
+    context = {'comment_list': comment_list,'user':request.user, 'now': now, 'color':request.user.color}
 
     return render(request, 'positivepets/chat_form.html', context)

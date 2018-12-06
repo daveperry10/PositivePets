@@ -6,9 +6,10 @@
     <title>   {% block title %} PositivePets {% endblock %} </title>
 
     {% load staticfiles %}
-
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" href="{% static 'positivepets/images/pawprint.ico' type='image/x-icon' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <!--<link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'> -->
     <link rel="stylesheet" type="text/css" href="{% static 'positivepets/style.css' %}" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  ></script>
@@ -27,7 +28,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'positivepets:index' %}">PositivePets</a>
+            {% if user.is_authenticated %}
+                <a class="navbar-brand" style="color:{{user.color}};" href="{% url 'positivepets:profile' user.id 'show' %}" >PositivePets </a>
+            {% else %}
+                <a class="navbar-brand" href="" >PositivePets </a>
+            {% endif %}
         </div>
 
         <!-- Items -->
@@ -35,7 +40,13 @@
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav">
                     <li class="">
-                        <a href="{% url 'positivepets:mail_create' %}">
+                        <a href="{% url 'positivepets:user_pets' user.id %}">
+                            <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>&nbsp;My Pets
+                        </a>
+                    </li>
+
+                    <li class="">
+                        <a href="{% url 'positivepets:mail_create' 'none' 0 %}">
                             <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp; Email
                         </a>
                     </li>
@@ -91,11 +102,7 @@
                 <li>
                     {% if user.is_authenticated %}
                         <a href="{% url 'positivepets:user_pets' user.id %}">
-                            <span> Hello {{user.username | capfirst}}! </span>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'login' %}">
-                            <span> <b> Please log in </b> </span>
+                            <span style="color:{{user.color}};"> Hello {{user.username | capfirst}}! </span>
                         </a>
                     {% endif %}
 
@@ -104,7 +111,6 @@
         </div>
     </div>
 </nav>
-
 
 {% block body %}
 {% endblock %}

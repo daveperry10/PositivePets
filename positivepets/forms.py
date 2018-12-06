@@ -9,13 +9,13 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ('username', 'email', 'city', 'picture', 'birthday')
+        fields = ('username', 'email', 'city', 'picture', 'birthday', 'color')
 
 class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'username', 'city', 'picture', 'birthday')
+        fields = ('email', 'username', 'city', 'picture', 'birthday', 'color')
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -37,6 +37,11 @@ class PetDescriptionForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['description']
+
+class BioForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['bio']
 
 class CustomUserChangePictureForm(forms.Form):
     file = forms.FileField()

@@ -5,6 +5,12 @@ from positivepets.models import CustomUser
 from positivepets.forms import CustomUserCreationForm,CustomUserChangePictureForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.core.files import File
+from django.conf import settings
+from pathlib import Path
+import os
+from django.templatetags import static
+from positivepets.views.colors import color_map
 
 class UserFormView(View):
     form_class = CustomUserCreationForm
@@ -21,19 +27,38 @@ class UserFormView(View):
 
         if form.is_valid():
             user = form.save(commit=False)
-            username = form.cleaned_data['username'].lower()
+            user.username = form.cleaned_data['username'].lower()
             password = form.cleaned_data['password1'].lower()
-            form.picture = request.FILES['picture']
-            user.picture = form.picture
+            try:
+                user.picture = request.FILES['picture']
+            except:
+                #if they don't put a picture, give them the star icon.
+                user.picture.save('star_icon.jpg', File(open(os.path.join(settings.STATIC_ROOT, 'star_icon.jpg'),'rb')))
+
             user.set_password(password)
             user.save()
 
-            user = authenticate(username=username, password=password)
+            user = authenticate(username=user.username, password=password)
             if user is not None:
                 if user.is_active:
                     login(request, user)
                     return redirect('positivepets:index')
+
         return render(request, self.template_name, {'form':form})
+
+
+def color_change_view(request):
+    context = {'color_list': color_map.keys(), 'color': request.user.color}
+    return render(request, 'positivepets/color_change_form.html', context)
+
+def color_save_view(request):
+
+    if request.POST:
+        user = request.user
+        user.color = request.POST['color']
+        user.save()
+        return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action': 'show'}))
+    return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id': request.user.id, 'action': 'show'}))
 
 
 def test_view(request):
@@ -59,7 +84,7 @@ def test_view(request):
         return HttpResponseRedirect(url)
 
     context = {"testy":testy, "user":user, "user_name":user_name, "daisies":daisies, "years":years_old, "array_city":array_city_capital}
-    return render(request, 'positivepets/views/test_template.html', context)
+    return render(request, 'positivepets/test/test_template.html', context)
 
 def about_view(request):
     return render(request, 'positivepets/about.html')

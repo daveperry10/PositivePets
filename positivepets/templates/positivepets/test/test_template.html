@@ -4,9 +4,60 @@
 {% block body %}
 
 <div class="container">
+    <!-- HERO IMAGE -->
+    <div style="width: 100vw; height: 100vh; background-image: url('{{user.picture.url}}');background-position: center;background-repeat: no-repeat;background-size: cover;position: relative;">
+    </div>
+    <div class="row display-flex">
+    <div class="col-lg-4 col-md-6 col-sm-12" style="background-color:pink;">
+        <div class="box">
+            <h3>Some text</h3>
+            <img src="//placehold.it/150x180" class="center-block">
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12" style="background-color:pink;" >
+        <div class="box">
+            <h3>Some text</h3>
+            <h3>Some text</h3>
+            <h3>Some text</h3>
+            <h3>Some text</h3>
+            <h3>Some text</h3>
+            <h3>Some text</h3><h3>Some text</h3><h3>Some text</h3><h3>Some text</h3><h3>Some text</h3><h3>Some text</h3>
 
+
+            <img src="//placehold.it/150x150" class="center-block">
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="box">
+            <h3>Some text more text that wraps to new link</h3>
+            <img src="//placehold.it/150x150" class="center-block">
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="box">
+            <h3>Some text</h3>
+            <img src="//placehold.it/150x150" class="center-block">
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="box">
+            <h3>Some text</h3>
+            <img src="//placehold.it/150x150" class="center-block">
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="box">
+            <h3>Some text</h3>
+            <img src="//placehold.it/150x150" class="center-block">
+        </div>
+    </div>
+</div>
+
+<!-- /bootstrap grid example -->
+
+
+    <!--
    <h2>Container class</h2>
-
    <div class="row">
 
        <div class="col-sm-5" style="background-color: #dedef8;box-shadow:inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
@@ -32,9 +83,8 @@
           <h4>col 3 hdr</h4>
           <p>col 3</p>
       </div>
-
-
    </div>
+-->
 
 </div>
 
@@ -45,7 +95,7 @@
 
 
     <span> {{daisies}} {{daisies | pluralize:"daisy, daisies"}} </span><br>
-
+    <! --
     <span>  {% if years < 10 %}
                 You are a child age {{years}}
             {% elif years < 18 %}
@@ -54,7 +104,7 @@
                 You are an adult age {{years}}
         {% endif %}
     </span>
-
+    -->
     <div>
         <br>
         {% for city in array_city %}

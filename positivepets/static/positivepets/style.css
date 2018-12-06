@@ -1,4 +1,25 @@
 
+/* this was supposed to make the row height the same but only works on IE not Chrome
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+.row.display-flex > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+*/
+
+.hero-image {
+    width: 100vw;
+    height: 50vh;
+    background-image: url('media/student.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
 img{
   height: 250px;
   width: 250px;
@@ -23,7 +44,11 @@ color: yellow;
 .icon{
   height: 60px;
   width: 60px;
-  padding: 0 15px 15px 0;
+  /*padding: 0 15px 15px 0;*/
+  margin: 7px;
+  border-width:5px;
+  border-style:solid;
+  border-color:lightgray;
 }
 
 .petpicture{
@@ -42,7 +67,7 @@ color: yellow;
 }
 
 .navbar-brand{
-    font-family: cursive;     /*old code:  font-family: 'Satisfy', cursive; second arg is the back up if 'Satisfy' doesn't load*/
+    font-family: 'Comic Sans MS', 'Marker Felt', arial;     /*old code:  font-family: 'Satisfy', cursive; second arg is the back up if 'Satisfy' doesn't load*/
     font-size: xx-large;
 }
 

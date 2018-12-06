@@ -14,12 +14,12 @@ class DetailView(generic.DetailView):
         pet_id = self.kwargs['pk']
         edit = self.kwargs['edit']
         pet = Pet.objects.get(id=pet_id)
-        user_id = pet.user.id
-        owner = CustomUser.objects.get(id=user_id)
+        owner = CustomUser.objects.get(id=pet.user.id)
         description = pet.description
         context['owner'] = owner
         context['description'] = description
         context['edit'] = edit
+        context['color'] = self.request.user.color  #only the user can see the buttons
         return context
 
 def description_edit(request, pk):

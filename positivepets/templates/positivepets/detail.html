@@ -5,7 +5,7 @@
 
     <title>   {% block title %} Pet Detail {% endblock %} </title>
 
-    <div class="container">
+    <div class="container" style="padding:10px;">
         <div class="row-md-12">
             <div class="col-sm-4">
                 <img src="{{pet.picture.url}}" class="img-responsive">
@@ -13,9 +13,9 @@
                 <h3> {{pet.type}} {% if pet.breed %} ({{pet.breed}}) {% endif %} </h3> <br>
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-sm-8">
                 <b> Here is some information about {{pet.name}} </b>
-
+                <br>
                 {% if user.id == owner.id %}
                     {% if edit == '1' %}  <! show edit box and save button>
                         <form class="form-horizontal" action="{% url 'positivepets:description_save' pet.id %}" method="post" enctype="multipart/form-data">
@@ -25,29 +25,25 @@
                             </div>
 
                             <div>
-                                <button type="submit" class="btn btn-success">Save</button>
+                                <button style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;" type="submit" class="btn btn-default">Save</button>
                             </div>
                         </form>
                     {% else %} <! show display text and edit button>
                         {{description}} <br><br>
-                        <form class="form-horizontal" action="{% url 'positivepets:description_edit' pet.id %}" method="post" enctype="multipart/form-data">
+                        <form class="form-inline" action="{% url 'positivepets:description_edit' pet.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <div>
-                                <button type="submit" class="btn btn-success">Edit</button>
-                            </div>
+                            <button style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;" type="submit" class="btn btn-default">Edit</button>
                         </form>
                     {% endif %}
 
                 {% else %}
                         {{description}}
                 {% endif %}
-            </div>
-            <div class="col-sm-4">
-                <b> Here is some information about {{pet.name}} </b>
+
+
             </div>
         </div>
     </div>
     <br>
-    <a href="{% url 'positivepets:user_pets' owner.id %}"> Back to {{owner.username | capfirst}}'s Page </a>
 
 {% endblock %}

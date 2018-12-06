@@ -11,8 +11,10 @@ class CustomUser(AbstractUser):
     # add additional fields in here
     #objects = MyManager
     city = models.CharField(max_length=250, null=True)
-    picture = models.FileField(upload_to='media/', blank=True, null=True)
+    picture = models.FileField(blank=True, null=True)
     birthday = models.DateField(null=True)
+    bio = models.CharField(max_length=1000, null=True)
+    color = models.CharField(max_length=50, null=True)
     #picture = models.ImageField('picture', upload_to='/media/', null=True, blank=True)
 
     def __str__(self):

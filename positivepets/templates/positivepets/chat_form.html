@@ -5,47 +5,53 @@
 
 
 {% block body %}
-<div class="container-fluid">
+<div class="container" style="border:1px solid #cecece;">
+    <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
     <span style="font-size:20pt;"> Welcome to the Chat Room! </span>
-    <span style="font-size:12pt; color:red;">These are messages for EVERYONE </span>
+    <hr style="border-color:gray;">
     <div class="row">
-        <div class="col-xs-we col-xs-4">
-            <br>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <b>New Message</b>
-                        <div class="form-group">
-                            <textarea class="form-control dp-pad" name="textbox" cols="20" rows="10"> </textarea>
-                        </div>
+        <div class="col-sm-we col-sm-4">
+            <h4>Compose Chat Message</h4>
+                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-success">Submit</button>
-                            </div>
+                    <div class="form-group">
+                        <textarea class="form-control" name="textbox" rows="6" placeholder="Type your chat message here" style="margin: 0 10px 0 0;"> </textarea>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <div class="col-sm-offset-2 col-sm-10 center-block">
+
+                            <button style="color:{{button_text_color}};background-color: {{user.color}};" type="submit" class="btn btn-default">Submit</button>
                         </div>
-                    </form>
-                </div>
-            </div>
+                    </div>
+                </form>
+
+                <a href="{% url 'positivepets:chatmessage_create' %}">
+                    <button style="color:{{button_text_color}};background-color: {{user.color}};" type="submit" class="btn btn-default">Refresh</button>
+                </a>
+
+
         </div>
 
-        <div class="col-xs-we col-xs-8">
-             <table class="table table-bordered table-condensed">
+        <div class="col-sm-we col-sm-8">
+             <table style="background-color:white;" class="table table-bordered table-condensed">
                  <thead style="background-color:lightgray">
                      <th>Picture</th>
                      <th>Name</th>
-                     <th>Time</th>
                      <th>Message</th>
+                     <th>Time</th>
                  </thead>
                  <tbody>
                  {% for item in comment_list %}
                  <tr>
                      <td> <img src="{{item.user.picture.url}}" style="width:30px;height:30px;"></td>
-                     <td><b> {{item.user.username| capfirst}} </b></td>
-
-                     <td> {{item.timestamp| date:"D, P"}} </td>
+                     <td style="color:{{item.user.color}};"><b> {{item.user.username| capfirst}} </b></td>
                      <td> {{item.comment}} </td>
+                     <td> {{item.timestamp| date:"D, P"}} </td>
+
                  </tr>
                  {% endfor %}
                  </tbody>

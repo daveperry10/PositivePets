@@ -29,39 +29,62 @@ class MailCreate(CreateView):
             m.recipient = CustomUser.objects.get(username=r.lower())
             m.save()
 
-        return HttpResponseRedirect(reverse('positivepets:mail_create'))
+        return HttpResponseRedirect(reverse('positivepets:mail_create', kwargs=self.kwargs))
 
     def get_context_data(self, **kwargs):
+        """
+        messages are repeated in the table if there are multiple recipients.
+        id is the auto-incremented primary key of the Mail table.
+        msg_id is the common identifier for several rows if multiple recipients.
+        """
         context = super(MailCreate, self).get_context_data(**kwargs)
         context['inbox'] = Mail.objects.filter(recipient=self.request.user).order_by('-timestamp')
         context['sent_mail'] = Mail.objects.filter(sender=self.request.user).order_by('-timestamp')
         context['sender'] = self.request.user
         context['user_list'] = CustomUser.objects.exclude(id=self.request.user.id).exclude(username='admin')
+        context['color'] = self.request.user.color
+        recipient_list = []
+
+        if self.kwargs['reply_type'] == 'reply-all':
+            id = self.kwargs['id']
+            msg = Mail.objects.get(id=id)
+
+            for item in Mail.objects.filter(msg_id=msg.msg_id):
+                recipient_list.append(item.recipient.id)
+
+            recipient_list.append(msg.sender.id)
+            context['subject'] = msg.subject
+            context['message'] = "\n\n ------------------- \n " + msg.message
+
+        elif self.kwargs['reply_type'] == 'reply':
+            id = self.kwargs['id']
+            msg = Mail.objects.get(id=id)
+            recipient_list.append(msg.sender.id)
+            context['subject'] = msg.subject
+            context['message'] = "\n\n ------------------- \n " + msg.message
+
+        else:
+            context['subject'] = ''
+            context['message'] = ''
+
+        context['recipient_list'] = recipient_list
+
         return context
 
-def mail_view(request, message_num):
-    """
-      Strategy:
-      you either got a reply or a reply all variable in POST
-      pull the whole inbox, sort descending
-      get the one at message_num.  find it's id.
-      send user back to url:'mail_create' with id as argument.
-      mail id will prepopulate subj and msg
-      ** need to pre-select the recipients using the msg_id associated with id
-      if 'reply' just prepopulate the sender
-      if 'reply all' prepopulate the sender and other recipients
 
-      Necessary changes:
-      1.  MailCreate has to take an argument for the id of the message to prepopulate the form with, if any
-      2.  Table needs links in each row, with an id for each one to use as the argument
-      ** template within a link
-      3.
-      """
+def mail_view(request, message_num):
 
     message_list = Mail.objects.filter(recipient=request.user.id).order_by('-timestamp')
     mail = message_list[int(message_num)]
     mail.status = EMAIL_STATUS_READ
     mail.save()
-    context = {'mail': mail}
+
+    # take django query_set and turn it into a comma-delimited list of usernames
+    recipient_list = list(Mail.objects.filter(msg_id=mail.msg_id))
+    my_list  = [o.recipient.username.title() for o in recipient_list]
+    recipient_string = ", ".join(my_list)
+
+
+    context = {'mail': mail, 'recipients': recipient_string}
 
     return render(request, 'positivepets/mail_message_form.html', context)

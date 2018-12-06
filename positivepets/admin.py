@@ -13,6 +13,6 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['email', 'username', 'city', 'picture', 'birthday']
 
     fieldsets = (
-        (('User'), {'fields': ('username', 'email', 'picture', 'birthday')}),
+        (('User'), {'fields': ('username', 'email', 'picture', 'city', 'birthday')}),
     )
 admin.site.register(CustomUser, CustomUserAdmin)
