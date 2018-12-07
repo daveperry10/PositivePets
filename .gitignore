@@ -1,0 +1,14 @@
+*.jpg
+
+*.jpeg
+
+*.png
+
+*.gif
+
+*__pycache__*
+.idea*
+db.sqlite3
+db
+desktop.ini
+Command Prompt.lnk
