@@ -81,6 +81,13 @@
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
                         </a>
                     </li>
+
+                    <li class="">
+                        <a href="{% url 'positivepets:register' %}">
+                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp; New User
+                        </a>
+                    </li>
+
                 {% else %}
 
                     <li class="">
@@ -88,11 +95,7 @@
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Login
                         </a>
                     </li>
-                    <li class="">
-                        <a href="{% url 'positivepets:register' %}">
-                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp; New User
-                        </a>
-                    </li>
+
                 {% endif %}
                 <li class="">
                     <a href="{% url 'positivepets:about' %}">

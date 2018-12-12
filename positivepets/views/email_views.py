@@ -5,6 +5,7 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
+from .colors import color_map
 
 EMAIL_STATUS_UNREAD = 1
 EMAIL_STATUS_READ = 2
@@ -43,6 +44,7 @@ class MailCreate(CreateView):
         context['sender'] = self.request.user
         context['user_list'] = CustomUser.objects.exclude(id=self.request.user.id).exclude(username='admin')
         context['color'] = self.request.user.color
+        context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
         recipient_list = []
 
         if self.kwargs['reply_type'] == 'reply-all':

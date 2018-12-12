@@ -14,10 +14,10 @@
         {% csrf_token %}
         <div class="form-group">
             <label for="colors" class="col-sm-2 control-label">To:</label>
-            <div class="col-sm-10">
+            <div class="col-sm-4">
                 <select multiple class="form-control" id="colors" name="color" size="15">
-                    {% for c in color_list %}
-                        <option> {{c}} </option>
+                    {% for k,v in color_map.items %}
+                        <option style="background-color:{{k}}; color:{{v.button_text_color}}"> {{v.display_name}} </option>
                     {% endfor %}
                 </select>
             </div>

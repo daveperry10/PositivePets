@@ -23,7 +23,10 @@ class IndexView(generic.ListView):
 
             if friend.color:
                 context['color'] = friend.color
-                context['button_text_color'] = color_map[friend.color.lower()]
+                try:
+                    context['button_text_color'] = color_map[friend.color.lower()]['button_text_color']
+                except:
+                    context['button_text_color'] = 'rgb(40,40,40)'
             else:
                 context['color'] = 'lightgray'
                 context['button_text_color'] = 'rgb(40,40,40)'

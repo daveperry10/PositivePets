@@ -20,10 +20,10 @@
 
                     <h2> {{ pet.name }} </h2>
 
-                    <a href="{% url 'positivepets:detail' pet.id '0' %}" class="btn btn-default btn-sm" style="background-color:{{color}};border-color:gray;"> View Details </a>
+                    <a href="{% url 'positivepets:detail' pet.id '0' %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;"> View Details </a>
                     {% if friend.username == user.username %}
 
-                        <a href="{% url 'positivepets:pet_update' pet.id %}" class="btn btn-default btn-sm" style="background-color:{{color}};border-color:gray;"> Update </a>
+                        <a href="{% url 'positivepets:pet_update' pet.id %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;"> Update </a>
 
                         <form action="{% url 'positivepets:pet_delete' pet.id %}" method="post" style="display: inline;">
                             {% csrf_token %}

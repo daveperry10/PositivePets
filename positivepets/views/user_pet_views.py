@@ -5,6 +5,7 @@ from positivepets.models import Pet, CustomUser
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
+from .colors import color_map
 
 class PetCreate(CreateView):
     model = Pet
@@ -16,6 +17,7 @@ class PetCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super(PetCreate, self).get_context_data(**kwargs)
         context['color'] = self.request.user.color
+        context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
         return context
 
 class PetUpdate(UpdateView):
@@ -24,6 +26,7 @@ class PetUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(PetUpdate, self).get_context_data(**kwargs)
         context['color'] = self.request.user.color
+        context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
         return context
 
 class PetDelete(DeleteView):
@@ -58,5 +61,6 @@ class UserPets(generic.ListView):
 def user_pet_view(request, friend_id):
         friend = CustomUser.objects.get(id=friend_id)
         pet_list = Pet.objects.filter(user=friend_id)
-        context = {'friend': friend, 'pet_list': pet_list, 'color': friend.color}
+        context = {'friend': friend, 'pet_list': pet_list, 'color': friend.color, 'button_text_color': color_map[request.user.color.lower()]['button_text_color']}
+
         return render(request, 'positivepets/user_pets.html', context)

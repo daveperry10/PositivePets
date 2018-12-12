@@ -3,6 +3,7 @@ from positivepets.models import Pet, CustomUser
 from positivepets.forms import PetDescriptionForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from .colors import color_map
 
 class DetailView(generic.DetailView):
     model = Pet
@@ -19,7 +20,8 @@ class DetailView(generic.DetailView):
         context['owner'] = owner
         context['description'] = description
         context['edit'] = edit
-        context['color'] = self.request.user.color  #only the user can see the buttons
+        context['color'] = self.request.user.color
+        context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
         return context
 
 def description_edit(request, pk):

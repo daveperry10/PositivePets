@@ -3,9 +3,14 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import UserManager
 from django.contrib.auth.models import PermissionsMixin
-
+from django.core.files.images import ImageFile
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from io import StringIO, BytesIO
+from PIL import Image
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
 
 class CustomUser(AbstractUser):
     # add additional fields in here
@@ -34,6 +39,20 @@ class Pet(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        """
+        overwrite the picture with a simple PIL save method in the media_root directory
+        """
+        if self.picture:
+            super(Pet, self).save(*args, **kwargs)
+            img = Image.open(self.picture)
+            img.thumbnail((400, 400))
+            file = os.path.join(settings.MEDIA_ROOT, self.picture.name)
+            img.save(file, quality=60)
+        else:
+            super(Pet, self).save(*args, **kwargs)
+        return
 
 class Chat(models.Model):
     comment = models.CharField(max_length=2000)

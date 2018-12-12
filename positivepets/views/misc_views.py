@@ -19,7 +19,7 @@ class UserFormView(View):
     #display a blank form
     def get(self, request):
         form = self.form_class(None)
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form':form, 'color': request.user.color})
 
     def post(self, request):
         form = self.form_class(request.POST, request.FILES)
@@ -44,11 +44,11 @@ class UserFormView(View):
                     login(request, user)
                     return redirect('positivepets:index')
 
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form':form, 'color': request.user.color})
 
 
 def color_change_view(request):
-    context = {'color_list': color_map.keys(), 'color': request.user.color}
+    context = {'color_map': color_map, 'color': request.user.color}
     return render(request, 'positivepets/color_change_form.html', context)
 
 def color_save_view(request):
