@@ -38,12 +38,13 @@ class UserFormView(View):
                 except:
                     pass
             user.set_password(password)
+            user.invitedby = request.user
             user.save()
 
             user = authenticate(username=user.username, password=password)
             if user is not None:
                 if user.is_active:
-                    login(request, user)
+                    #login(request, user)
                     return redirect('positivepets:index')
 
         return render(request, self.template_name, {'form':form, 'color': request.user.color})
