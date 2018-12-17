@@ -33,8 +33,10 @@ class UserFormView(View):
                 user.picture = request.FILES['picture']
             except:
                 #if they don't put a picture, give them the star icon.
-                user.picture.save('star_icon.jpg', File(open(os.path.join(settings.STATIC_ROOT, 'star_icon.jpg'),'rb')))
-
+                try:
+                    user.picture.save('star_icon.jpg', File(open(os.path.join(settings.STATIC_ROOT, 'star_icon.jpg'),'rb')))
+                except:
+                    pass
             user.set_password(password)
             user.save()
 
@@ -48,16 +50,25 @@ class UserFormView(View):
 
 
 def color_change_view(request):
-    context = {'color_map': color_map, 'color': request.user.color}
+
+    context = {'color_map': color_map, 'color': request.user.color, 'color_name':color_map[request.user.color.lower()]['display_name']}
     return render(request, 'positivepets/color_change_form.html', context)
 
 def color_save_view(request):
 
     if request.POST:
         user = request.user
-        user.color = request.POST['color']
+        color_display_name = request.POST['color']
+
+
+        for k, v in color_map.items():
+            if v['display_name'] == color_display_name:
+                user.color = k
+
         user.save()
+
         return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action': 'show'}))
+
     return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id': request.user.id, 'action': 'show'}))
 
 

@@ -20,11 +20,18 @@ class CustomUser(AbstractUser):
     birthday = models.DateField(null=True)
     bio = models.CharField(max_length=1000, null=True)
     color = models.CharField(max_length=50, null=True)
-    #picture = models.ImageField('picture', upload_to='/media/', null=True, blank=True)
+    invitedby = models.ForeignKey('self', on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return self.email
 
+class FriendGroup(models.Model):
+    name = models.CharField(max_length=250)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+
+class FriendGroupUser(models.Model):
+    group = models.ForeignKey(FriendGroup, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
 
 class Pet(models.Model):
     name = models.CharField(max_length=250)
