@@ -63,8 +63,10 @@ class MailCreate(CreateView):
             msg = Mail.objects.get(id=id)
             recipient_list.append(msg.sender.id)
             context['subject'] = msg.subject
-            context['message'] = "\n\n ------------------- \n " + msg.message
-
+            if msg.message is None:
+                context['message'] = "\n\n ------------------- \n "
+            else:
+                context['message'] = "\n\n ------------------- \n " + msg.message
         else:
             context['subject'] = ''
             context['message'] = ''

@@ -15,7 +15,7 @@ import os
 import glob
 
 os.chdir('media')
-file_list = glob.glob('*.jpg') + glob.glob('*.png') + glob.glob('*.jpeg')
+file_list = glob.glob('*.jpg') + glob.glob('*.png') + glob.glob('*.jpeg')+ glob.glob('*.JPG')
 
 for file in file_list:
     try:
