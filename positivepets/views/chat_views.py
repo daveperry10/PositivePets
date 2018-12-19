@@ -17,7 +17,9 @@ def chat_message_create(request):
     comment_list = Chat.objects.all().order_by('-timestamp')[:15] #no neg indexing
 
     now = datetime.now()
-    to_zone = tz.tzlocal()
+    #to_zone = tz.tzlocal()
+    to_zone = tz.gettz("America/Los_Angeles")
+
     for comment in comment_list:
         comment.timestamp.astimezone(to_zone)
 
