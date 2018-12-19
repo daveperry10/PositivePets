@@ -4,6 +4,7 @@ from django.shortcuts import render
 from .colors import color_map
 
 import time
+from dateutil import tz
 def chat_message_create(request):
     model = Chat
     fields = ['comment']
@@ -16,6 +17,9 @@ def chat_message_create(request):
     comment_list = Chat.objects.all().order_by('-timestamp')[:15] #no neg indexing
 
     now = datetime.now()
+    to_zone = tz.tzlocal()
+    for comment in comment_list:
+        comment.timestamp.astimezone(to_zone)
 
     context = {'comment_list': comment_list,'user':request.user, 'now': now, 'color':request.user.color}
     context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']

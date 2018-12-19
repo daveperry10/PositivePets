@@ -9,13 +9,13 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ('username', 'email', 'city', 'picture', 'birthday', 'color')
+        fields = ('username', 'email', 'city', 'birthday')
 
 class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'username', 'city', 'picture', 'birthday', 'color')
+        fields = ('email', 'username', 'city', 'birthday')
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
