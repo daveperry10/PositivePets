@@ -20,8 +20,13 @@ class DetailView(generic.DetailView):
         context['owner'] = owner
         context['description'] = description
         context['edit'] = edit
-        context['color'] = self.request.user.color
-        context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
+        try:
+            context['color'] = self.request.user.color
+            context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
+        except:
+            context['color'] = 'lightgray'
+            context['button_text_color'] = 'rgb(40,40,40)'
+
         return context
 
 def description_edit(request, pk):

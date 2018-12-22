@@ -55,6 +55,13 @@
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Chat Room
                         </a>
                     </li>
+                    <li class="">
+                        <a href="{% url 'positivepets:picture_search' %}">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp; Animal Shelter
+                        </a>
+                    </li>
+
+
                 </ul>
 
                 {% if 0 %}
@@ -81,12 +88,13 @@
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
                         </a>
                     </li>
-
-                    <li class="">
-                        <a href="{% url 'positivepets:register' %}">
-                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp; New User
-                        </a>
-                    </li>
+                    {% if user.username == 'admin' %}
+                        <li class="">
+                            <a href="{% url 'positivepets:register' %}">
+                                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp; New User
+                            </a>
+                        </li>
+                    {% endif %}
 
                 {% else %}
 

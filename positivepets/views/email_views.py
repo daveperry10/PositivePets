@@ -43,8 +43,13 @@ class MailCreate(CreateView):
         context['sent_mail'] = Mail.objects.filter(sender=self.request.user).order_by('-timestamp')
         context['sender'] = self.request.user
         context['user_list'] = CustomUser.objects.exclude(id=self.request.user.id).exclude(username='admin')
-        context['color'] = self.request.user.color
-        context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
+        try:
+            context['color'] = self.request.user.color
+            context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
+        except:
+            context['color'] = 'lightgray'
+            context['button_text_color'] = 'rgb(40,40,40)'
+
         recipient_list = []
 
         if self.kwargs['reply_type'] == 'reply-all':

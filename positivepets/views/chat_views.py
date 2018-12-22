@@ -18,11 +18,16 @@ def chat_message_create(request):
 
     now = datetime.now()
     #to_zone = tz.tzlocal()
-    to_zone = tz.gettz("America/Los_Angeles")
+    to_zone = tz.gettz("America/New_York")
 
     for comment in comment_list:
-        comment.timestamp.astimezone(to_zone)
+        comment.timestamp = comment.timestamp.astimezone(to_zone)
 
     context = {'comment_list': comment_list,'user':request.user, 'now': now, 'color':request.user.color}
-    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+
+    try:
+        context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+    except:
+        context['button_text_color'] = 'rgb(40,40,40)'
+
     return render(request, 'positivepets/chat_form.html', context)

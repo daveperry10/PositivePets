@@ -22,7 +22,9 @@ class IndexView(generic.ListView):
             friend = CustomUser.objects.get(id=self.kwargs['friend_id'])
 
             if friend.color:
-                context['color'] = friend.color
+
+                context['color'] = color_map[friend.color.lower()]['display_name']
+
                 try:
                     context['button_text_color'] = color_map[friend.color.lower()]['button_text_color']
                 except:

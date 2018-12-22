@@ -70,12 +70,15 @@ urlpatterns = [
     # /positivepets/about/
     url(r'^about/$', views.misc_views.about_view, name='about'),
 
-#TEST
+# SEARCH #
+    url(r'^picture_search/$', views.misc_views.picture_search, name='picture_search'),
+    url(r'^do_search/$', views.misc_views.do_search, name='do_search'),
+
+    #TEST
     # /positivepets/test/
     url(r'^test/$', views.misc_views.test_view, name='test_view'),
 
 #ICON
-
     url(r'^pawprint.ico$', RedirectView.as_view(url=staticfiles_storage.url('images/pawprint.ico')), name="pawprint"),
 ]
 

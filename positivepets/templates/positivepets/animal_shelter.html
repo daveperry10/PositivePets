@@ -1,0 +1,81 @@
+
+{% extends 'positivepets/base.html' %}
+{% block body %}
+    {% load static %}
+
+
+
+
+
+    <div class="container" style="border:1px solid #cecece;">
+        <h3>Welcome to the Animal Shelter</h3>
+        <h4>Search for a pet to adopt</h4>
+        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+
+                <div class="row animal">
+                    <div class="col-sm-2"> <label for="baby_or_fullgrown"> &nbsp &nbsp Age: </label></div>
+                    <div class="col-sm-4"> <input type="radio" checked="checked" id="baby_or_fullgrown" name="baby_or_fullgrown" value="baby" style="margin: 0 0 0 10px;"> Baby
+                        <input type="radio" name="baby_or_fullgrown" value="fullgrown" style="margin: 0 0 0 10px;"> Full Grown</div>
+                </div>
+                <div class="row animal">
+                    <div class="col-sm-2">
+                        <label for="animal_type"> &nbsp &nbsp Animal Type: </label>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <select id="animal_type" onchange="fillBreedsJson('{{ json_breeds | escapejs }}')" name="animal_type" style="margin: 0 0 0 10px;">
+                            <!--{% for name in animal_names %}
+                                <option> {{name}} </option>
+                            {% endfor%} -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row animal">
+                    <div class="col-sm-2">
+                        <label for="breed"> &nbsp &nbsp Breed: </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="breed" name="breed" style="margin: 0 0 0 10px;">
+                            <!--now filled by js function -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label for="search_words"> &nbsp &nbsp Search Words: </label>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <input name="search_words" id="search_words" size="30" placeholder="enter words with space between" style="margin: 0 0 0 10px;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <button formaction="{% url 'positivepets:do_search' %}" onclick="saveState()" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+        {% for img in image_list %}
+            <!--<a> href="{% url 'positivepets:pet_add' %} -->
+                    <img src={{img}} onclick="makeBig('{{img}}')" onmouseover="makeBig('{{img}}')" style="margin: 3px 0 0 0; border-radius:5px; border: 5px solid {{color}}; height:100px; width:100px; object-fit: cover;">
+
+        {% endfor %}
+    </div>
+
+    <script src="{% static 'positivepets/animal_shelter.js' %}">
+    </script>
+
+    <script>
+        var jsonObjectAnimals = JSON.parse('{{ json_animals | escapejs }}')
+        var jsonObjectBreeds = JSON.parse('{{ json_breeds | escapejs }}')
+        window.onload = loadMe(jsonObjectAnimals, jsonObjectBreeds)
+    </script>
+
+
+{% endblock %}
