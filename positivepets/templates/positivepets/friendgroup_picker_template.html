@@ -1,0 +1,22 @@
+<br>
+
+<div class="form-inline">
+    <form action="{% url 'positivepets:change_active_group' page %}">
+        <div class="form-group">
+            <select name="active_friend_group" class="form-control" style="font-size:12pt; float:right; margin:5px 0 0 0;">
+                {% for grp in user_friend_groups %}
+                    {% if grp.id == selected_friend_group.id %}
+                        <option value="{{grp.id}}" selected> {{grp}} </option>
+                    {% else %}
+                        <option value="{{grp.id}}"> {{grp}} </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <button
+                style="color:{{button_text_color}}; background-color:{{color}};border-color:gray; margin:5px 0 0 0;" type="submit" class="btn btn-default">Go
+            </button>
+        </div>
+    </form>
+</div>

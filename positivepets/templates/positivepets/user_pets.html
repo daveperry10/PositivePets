@@ -2,14 +2,11 @@
 
 {% block body %}
 <div class="container-fluid">
-    <img src="{{user.picture.url}}" class="icon" style="border-color:{{color}}; border-radius:5px;">
-    <span style="font-size:20pt;"> {{friend.username | capfirst}}'s Pets:</span>
-    <hr style="border-color:gray;">
-
-    </br>
     <div class="container" style="border:1px solid #cecece;">
-        <br>
-        <br>
+        <img src="{{user.picture.url}}" class="icon" style="border-color:{{color}}; border-radius:5px;">
+        <span style="font-size:20pt;"> {{friend.username | capfirst}}'s Pets:</span>
+        <hr style="border-color:gray;">
+
         <div class="row-md-4">
             {% for pet in pet_list %}
 

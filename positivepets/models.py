@@ -28,9 +28,23 @@ class CustomUser(AbstractUser):
 class FriendGroup(models.Model):
     name = models.CharField(max_length=250)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+    def __str__(self):
+        return self.name
 
 class FriendGroupUser(models.Model):
     group = models.ForeignKey(FriendGroup, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+
+class UserState(models.Model):
+    """ Save user state such as which friendgroup the user is looking at so it is consistent across the app
+        Built to scale to save other state variables as they are developed """
+    name = models.CharField(max_length=50)
+    value = models.CharField(max_length=50, null=True)
+    ref_id = models.IntegerField(default=0)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1, unique=True)
+
+class UserUIPermissions(models.Model):
+    name = models.CharField(max_length=50)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
 
 class Pet(models.Model):
@@ -65,7 +79,7 @@ class Chat(models.Model):
     comment = models.CharField(max_length=2000)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
     timestamp = models.DateTimeField()
-
+    group = models.ForeignKey(FriendGroup, on_delete=models.CASCADE, default=1)
     def get_absolute_url(self):
         return reverse('positivepets:chatmessage_create')
 
@@ -80,7 +94,6 @@ class Mail(models.Model):
     status = models.IntegerField(default=0)
     subject = models.CharField(max_length=100, null=True, blank=True)
     message = models.CharField(max_length=500, null=True, blank=True)
-
     def get_absolute_url(self):
         return reverse('positivepets:mail_create')
 

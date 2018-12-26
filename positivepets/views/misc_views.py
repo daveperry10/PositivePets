@@ -1,7 +1,7 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from positivepets.models import CustomUser
+from positivepets.models import CustomUser, UserState, FriendGroup, FriendGroupUser
 from positivepets.forms import CustomUserCreationForm,CustomUserChangePictureForm, PictureSearchForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -13,8 +13,10 @@ import os
 import csv
 import json
 from collections import defaultdict
-
 from positivepets.views.colors import color_map
+from positivepets.views.chat_views import chat_message_create
+from positivepets.views.index_views import IndexView
+from positivepets.views.email_views import MailCreate
 
 class UserFormView(View):
     form_class = CustomUserCreationForm
@@ -44,8 +46,27 @@ class UserFormView(View):
             user.set_password(password)
             user.invitedby = request.user
             user.save()
-
             user = authenticate(username=user.username, password=password)
+
+            #1. set a default entry in friendgroupuser and userstate tables
+            #2. in index page load, send list of this user's groups as well as the userstate in the context
+            #3. have the drop down menu save to userstate
+
+            # Assign them to a default user group
+            fg = FriendGroup.objects.get(name='Unassigned')
+            fgu = FriendGroupUser()
+            fgu.group = fg
+            fgu.user = user
+            fgu.save()
+
+            # Set user-state activegroup to the default user group
+            us = UserState()
+            us.name = 'ActiveGroup'
+            us.user = user
+            us.ref_id = fg.id
+            us.value = ""
+            us.save()
+
             if user is not None:
                 if user.is_active:
                     #login(request, user)
@@ -152,3 +173,37 @@ def do_search(request):
 
     context = {'json_animals': json_animals, 'json_breeds': json_breeds, "image_list":img_list, 'color':request.user.color}
     return render(request, 'positivepets/animal_shelter.html', context)
+
+def change_active_group(request,redirect):
+    if request.POST:
+        try:
+            active_group = request.POST['active_friend_group']
+        except:
+            pass
+
+        #us = UserState.objects.filter(user=request.user).values('name')
+
+        # get the group ids for this user
+        group_ids = FriendGroupUser.objects.filter(user=request.user).values('id')
+
+        # get the groups for those ids (this user's groups)
+        groups = FriendGroup.objects.filter(pk__in=group_ids)
+
+
+        # choose the group id that matches the selected name
+        # save that id as ref_id in user_state
+
+    us = UserState.objects.filter(user=request.user).get(name='ActiveGroup')
+    us.ref_id = int(request.GET['active_friend_group'])
+    us.save()
+    if redirect == 'chat':
+        return chat_message_create(request)
+    elif redirect == 'email':
+        #return MailCreate.as_view()
+        return HttpResponseRedirect(reverse('positivepets:mail_create', kwargs={'id':request.user.id, 'reply_type':'none'}))
+    if redirect == 'index':
+        return HttpResponseRedirect(reverse('positivepets:index'))
+
+def shelter_adopt(request, friend_id):
+
+    return HttpResponseRedirect(reverse('positivepets:user_pets', kwargs={'id':friend_id}))

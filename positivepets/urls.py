@@ -70,13 +70,15 @@ urlpatterns = [
     # /positivepets/about/
     url(r'^about/$', views.misc_views.about_view, name='about'),
 
-# SEARCH #
+# SHELTER#
     url(r'^picture_search/$', views.misc_views.picture_search, name='picture_search'),
     url(r'^do_search/$', views.misc_views.do_search, name='do_search'),
+    url(r'^shelter_adopt/$', views.misc_views.shelter_adopt, name='shelter_adopt'),
 
-    #TEST
+# TEST #
     # /positivepets/test/
     url(r'^test/$', views.misc_views.test_view, name='test_view'),
+    url(r'^change_active_group/(?P<redirect>(chat|email|index))/$', views.misc_views.change_active_group, name='change_active_group'),
 
 #ICON
     url(r'^pawprint.ico$', RedirectView.as_view(url=staticfiles_storage.url('images/pawprint.ico')), name="pawprint"),

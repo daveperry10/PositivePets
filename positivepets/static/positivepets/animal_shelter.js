@@ -68,6 +68,9 @@ function fillBreeds(breed_dict){
 
 function makeBig(img_url){
     //alert("make it big")
+    var elem = document.createElement("img");
+    elem.setAttribute("src",img_url);
+    document.getElementById("placehere").appendChild(elem);
 }
 
 function saveState(){
@@ -80,3 +83,20 @@ function saveState(){
     var searchWordsSelect = document.getElementById("search_words")
     localStorage.setItem("searchWordsSelect",searchWordsSelect.value)
     }
+
+function selectChange(){
+    // http request to save the new state variable and load the page with the new friend group filter applied
+    //window.location.replace("/positivepets/chatroom/new/");
+    //window.location.href = "/positivepets/chatroom/new/";
+    //"GET /positivepets/change_active_group/chat/?active_friend_group=2
+    //alert("yo");
+    //var xhttp = new XMLHttpRequest();
+
+  //  xhttp.onreadystatechange = function(){
+   // if (this.readyState == 4 && this.status == 200){
+   //     //document.getElementById("demo").innerHTML = this.responseText;
+   //     }
+
+      //  xhttp.open("GET", "/positivepets/chatroom/new/", true)
+        //xhttp.send("daves_get");
+}

@@ -6,9 +6,19 @@
 
 {% block body %}
 <div class="container" style="border:1px solid #cecece;">
-    <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
-    <span style="font-size:20pt;"> Welcome to the Chat Room! </span>
+        <div class="row">
+            <div class="col-md-9" style="font-size:20pt;">
+                <span style="margin:5px;font-size:20pt;">
+                    <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
+                     Welcome to the Chat Room!
+                </span>
+            </div>
+            <div class="col-md-3">
+                {% include 'positivepets/friendgroup_picker_template.html' with page='chat'%}
+            </div>
+
     <hr style="border-color:gray;">
+
     <div class="row">
         <div class="col-sm-we col-sm-4">
             <h4>Compose Chat Message</h4>
@@ -47,7 +57,7 @@
                  <tbody>
                  {% for item in comment_list %}
                  <tr>
-                     <td> <img src="{{item.user.picture.url}}" style="width:30px;height:30px;"></td>
+                     <td> <img src="{{item.user.picture.url}}" style=width:30px;height:30px;"></td>
                      <td style="color:{{item.user.color}};"><b> {{item.user.username| capfirst}} </b></td>
                      <td> {{item.comment}} </td>
                      <td> {{item.timestamp| utc | date:"D, P"}} </td>
@@ -60,4 +70,8 @@
         </div>
     </div>
 </div>
+{% load static %}
+<script src="{% static 'positivepets/animal_shelter.js' %}">
+</script>
+
 {% endblock %}

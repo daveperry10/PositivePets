@@ -1,9 +1,10 @@
 from django.views import generic
-from positivepets.models import CustomUser, Pet
+from positivepets.models import CustomUser, Pet, FriendGroup, FriendGroupUser, UserState
 from positivepets.forms import CustomUserChangePictureForm, BioForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from positivepets.views.colors import color_map
+from positivepets.utils import get_users
 
 class IndexView(generic.ListView):
     template_name = 'positivepets/index.html'
@@ -36,7 +37,13 @@ class IndexView(generic.ListView):
         context['action'] = self.kwargs['action']
         context['friend'] = friend
         context['pet_list'] = Pet.objects.filter(user=friend.id)
-        context['user_list'] = CustomUser.objects.all()
+        context['user_list'] = CustomUser.objects.filter(id__in=get_users(self.request.user.id))
+
+        # ActiveGroup DropDown List:  1.  get all groups 2. get active group
+        user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=self.request.user.id)
+        selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=self.request.user).ref_id)
+        context['user_friend_groups'] = user_friend_groups
+        context['selected_friend_group'] = selected_friend_group
 
         return context
 

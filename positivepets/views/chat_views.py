@@ -1,29 +1,42 @@
-from positivepets.models import Pet, Chat, CustomUser, Mail
+from positivepets.models import Pet, Chat, CustomUser, Mail, FriendGroupUser, FriendGroup, UserState
 from datetime import datetime
 from django.shortcuts import render
 from .colors import color_map
-
-import time
+from positivepets.utils import get_users
 from dateutil import tz
+
 def chat_message_create(request):
     model = Chat
     fields = ['comment']
+    context = {}
+
+    # ActiveGroup DropDown List:  1.  get all groups 2. get active group
+    user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id = request.user.id)
+    selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user = request.user).ref_id)
+    context['user_friend_groups'] = user_friend_groups
+    context['selected_friend_group'] = selected_friend_group
+
     if request.method == 'POST':
         msg = Chat()
         msg.timestamp = datetime.now()
         msg.user = request.user
         msg.comment = request.POST['textbox']
+        msg.group = selected_friend_group
         msg.save()
-    comment_list = Chat.objects.all().order_by('-timestamp')[:15] #no neg indexing
 
-    now = datetime.now()
-    #to_zone = tz.tzlocal()
+    now = datetime.now()    #to_zone = tz.tzlocal()
     to_zone = tz.gettz("America/New_York")
+
+    user_list = get_users(request.user.id)
+    comment_list = Chat.objects.filter(user_id__in=user_list).filter(group=selected_friend_group.id).order_by('-timestamp')[:15]  # no neg indexing
+    context['comment_list'] = comment_list
 
     for comment in comment_list:
         comment.timestamp = comment.timestamp.astimezone(to_zone)
 
-    context = {'comment_list': comment_list,'user':request.user, 'now': now, 'color':request.user.color}
+    context['user'] = request.user
+    context['now'] = now
+    context['color'] = request.user.color
 
     try:
         context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']

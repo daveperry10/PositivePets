@@ -11,6 +11,13 @@
                 <img src="{{pet.picture.url}}" class="img-responsive">
                 <h1> {{pet.name}} </h1>
                 <h3> {{pet.type}} {% if pet.breed %} ({{pet.breed}}) {% endif %} </h3> <br>
+
+                <form class="form-horizontal" action="{% url 'positivepets:user_pets' owner.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div>
+                        <button style="color:{{button_text_color}}; background-color:{{owner.color}};border-color:gray;" type="submit" class="btn btn-default">Back to {{owner.username | capfirst}}'s Pets</button>
+                    </div>
+
             </div>
 
             <div class="col-sm-8">

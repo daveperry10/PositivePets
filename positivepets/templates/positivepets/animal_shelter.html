@@ -4,62 +4,81 @@
     {% load static %}
 
 
-
-
-
     <div class="container" style="border:1px solid #cecece;">
-        <h3>Welcome to the Animal Shelter</h3>
-        <h4>Search for a pet to adopt</h4>
-        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
 
-                <div class="row animal">
-                    <div class="col-sm-2"> <label for="baby_or_fullgrown"> &nbsp &nbsp Age: </label></div>
-                    <div class="col-sm-4"> <input type="radio" checked="checked" id="baby_or_fullgrown" name="baby_or_fullgrown" value="baby" style="margin: 0 0 0 10px;"> Baby
-                        <input type="radio" name="baby_or_fullgrown" value="fullgrown" style="margin: 0 0 0 10px;"> Full Grown</div>
-                </div>
-                <div class="row animal">
-                    <div class="col-sm-2">
-                        <label for="animal_type"> &nbsp &nbsp Animal Type: </label>
-                    </div>
+        <span style="margin:5px;font-size:20pt;">
+            <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
+             Welcome to the Animal Shelter
+        </span>
+        <hr style="border-color:gray;">
+        <div class="row">
+            <div class="col-sm-5">
+                <h4>Search for a pet to adopt</h4><br>
+                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="row animal">
+                            <div class="col-sm-4"> <label for="baby_or_fullgrown"> &nbsp &nbsp Age: </label></div>
+                            <div class="col-sm-8"> <input type="radio" checked="checked" id="baby_or_fullgrown" name="baby_or_fullgrown" value="baby" style="margin: 0 0 0 10px;"> Baby
+                                <input type="radio" name="baby_or_fullgrown" value="fullgrown" style="margin: 0 0 0 10px;"> Full Grown</div>
+                        </div>
+                        <div class="row animal">
+                            <div class="col-sm-4">
+                                <label for="animal_type"> &nbsp &nbsp Animal: </label>
+                            </div>
 
-                    <div class="col-sm-2">
-                        <select id="animal_type" onchange="fillBreedsJson('{{ json_breeds | escapejs }}')" name="animal_type" style="margin: 0 0 0 10px;">
-                            <!--{% for name in animal_names %}
-                                <option> {{name}} </option>
-                            {% endfor%} -->
-                        </select>
-                    </div>
-                </div>
+                            <div class="col-sm-4">
+                                <select id="animal_type" onchange="fillBreedsJson('{{ json_breeds | escapejs }}')" name="animal_type" style="margin: 0 0 0 10px;">
+                                    <!--{% for name in animal_names %}
+                                        <option> {{name}} </option>
+                                    {% endfor%} -->
+                                </select>
+                            </div>
+                        </div>
 
-                <div class="row animal">
-                    <div class="col-sm-2">
-                        <label for="breed"> &nbsp &nbsp Breed: </label>
-                    </div>
-                    <div class="col-sm-2">
-                        <select id="breed" name="breed" style="margin: 0 0 0 10px;">
-                            <!--now filled by js function -->
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <label for="search_words"> &nbsp &nbsp Search Words: </label>
-                    </div>
+                        <div class="row animal">
+                            <div class="col-sm-4">
+                                <label for="breed"> &nbsp &nbsp Breed: </label>
+                            </div>
+                            <div class="col-sm-4">
+                                <select id="breed" name="breed" style="margin: 0 0 0 10px;">
+                                    <!--now filled by js function -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="search_words"> &nbsp &nbsp Details: </label>
+                            </div>
 
-                    <div class="col-sm-2">
-                        <input name="search_words" id="search_words" size="30" placeholder="enter words with space between" style="margin: 0 0 0 10px;">
+                            <div class="col-sm-4">
+                                <input name="search_words" id="search_words" size="20" placeholder="search words" style="margin: 0 0 0 10px;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button formaction="{% url 'positivepets:do_search' %}" onclick="saveState()" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Submit</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <button formaction="{% url 'positivepets:do_search' %}" onclick="saveState()" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Submit</button>
-                    </div>
-                </div>
+                </form>
             </div>
-        </form>
+            <div class="col-sm-4">
+                <img id="placehere" src="{{user.picture.url}}" style="height:100%; width:100%; margin:0 0 10px 10px; border-radius:5px; border: 5px solid {{color}};">
+            </div>
+            <div class="col-sm-3">
+                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
 
+                        <input name="adopted_pet_name" id="adopted_pet_name" size="15" placeholder="Name this pet" style="margin: 10px 0 0 10px;">
+                        <button formaction="{% url 'positivepets:shelter_adopt' %}" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Adopt</button>
+
+                </form>
+
+            </div>
+        </div>
+
+        <hr style="border-color:gray;">
 
         {% for img in image_list %}
             <!--<a> href="{% url 'positivepets:pet_add' %} -->
@@ -70,7 +89,6 @@
 
     <script src="{% static 'positivepets/animal_shelter.js' %}">
     </script>
-
     <script>
         var jsonObjectAnimals = JSON.parse('{{ json_animals | escapejs }}')
         var jsonObjectBreeds = JSON.parse('{{ json_breeds | escapejs }}')

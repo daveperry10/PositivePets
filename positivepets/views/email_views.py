@@ -1,4 +1,4 @@
-from positivepets.models import Mail, CustomUser
+from positivepets.models import Mail, CustomUser, FriendGroup, FriendGroupUser, UserState
 from django.views.generic.edit import CreateView
 from datetime import datetime
 from django.db.models import Max
@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from .colors import color_map
+from positivepets.utils import get_users
+from django.contrib import messages
 
 EMAIL_STATUS_UNREAD = 1
 EMAIL_STATUS_READ = 2
@@ -30,6 +32,7 @@ class MailCreate(CreateView):
             m.recipient = CustomUser.objects.get(username=r.lower())
             m.save()
 
+        messages.success(self.request, "Your email has been sent")
         return HttpResponseRedirect(reverse('positivepets:mail_create', kwargs=self.kwargs))
 
     def get_context_data(self, **kwargs):
@@ -39,10 +42,10 @@ class MailCreate(CreateView):
         msg_id is the common identifier for several rows if multiple recipients.
         """
         context = super(MailCreate, self).get_context_data(**kwargs)
-        context['inbox'] = Mail.objects.filter(recipient=self.request.user).order_by('-timestamp')
+        context['inbox'] = Mail.objects.filter(recipient=self.request.user).filter(sender__in=get_users(self.request.user.id)).order_by('-timestamp')
         context['sent_mail'] = Mail.objects.filter(sender=self.request.user).order_by('-timestamp')
         context['sender'] = self.request.user
-        context['user_list'] = CustomUser.objects.exclude(id=self.request.user.id).exclude(username='admin')
+        context['user_list'] = CustomUser.objects.filter(id__in=get_users(self.request.user.id)).exclude(id=self.request.user.id).exclude(username='admin')
         try:
             context['color'] = self.request.user.color
             context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
@@ -77,6 +80,12 @@ class MailCreate(CreateView):
             context['message'] = ''
 
         context['recipient_list'] = recipient_list
+
+        # ActiveGroup DropDown List:  1.  get all groups 2. get active group
+        user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=self.request.user.id)
+        selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=self.request.user).ref_id)
+        context['user_friend_groups'] = user_friend_groups
+        context['selected_friend_group'] = selected_friend_group
 
         return context
 
