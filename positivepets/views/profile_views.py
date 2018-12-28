@@ -1,20 +1,20 @@
 from django.views import generic
-from positivepets.models import CustomUser, Pet, FriendGroup, FriendGroupUser, UserState
+from positivepets.models import CustomUser, Pet, FriendGroup, UserState
 from positivepets.forms import CustomUserChangePictureForm, BioForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from positivepets.views.colors import color_map
-from positivepets.utils import get_users
+from positivepets.utils.colors import color_map
+from positivepets.utils.utils import get_users
 
-class IndexView(generic.ListView):
-    template_name = 'positivepets/index.html'
+class ProfileView(generic.ListView):
+    template_name = 'positivepets/profile.html'
     fields = ['bio']
 
     def get_queryset(self):
         return CustomUser.objects.all()
 
     def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
+        context = super(ProfileView, self).get_context_data(**kwargs)
 
         if (int(self.kwargs['friend_id'])==0) or self.request.user.is_anonymous:
             friend = self.request.user
@@ -34,16 +34,16 @@ class IndexView(generic.ListView):
                 context['color'] = 'lightgray'
                 context['button_text_color'] = 'rgb(40,40,40)'
 
-        context['action'] = self.kwargs['action']
-        context['friend'] = friend
-        context['pet_list'] = Pet.objects.filter(user=friend.id)
-        context['user_list'] = CustomUser.objects.filter(id__in=get_users(self.request.user.id))
+            context['action'] = self.kwargs['action']
+            context['friend'] = friend
+            context['pet_list'] = Pet.objects.filter(user=friend.id)
+            context['user_list'] = CustomUser.objects.filter(id__in=get_users(self.request.user.id))
 
-        # ActiveGroup DropDown List:  1.  get all groups 2. get active group
-        user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=self.request.user.id)
-        selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=self.request.user).ref_id)
-        context['user_friend_groups'] = user_friend_groups
-        context['selected_friend_group'] = selected_friend_group
+            # ActiveGroup DropDown List:  1.  get all groups 2. get active group
+            user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=self.request.user.id)
+            selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=self.request.user).ref_id)
+            context['user_friend_groups'] = user_friend_groups
+            context['selected_friend_group'] = selected_friend_group
 
         return context
 

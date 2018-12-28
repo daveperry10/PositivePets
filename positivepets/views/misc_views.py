@@ -1,22 +1,15 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from positivepets.models import CustomUser, UserState, FriendGroup, FriendGroupUser
-from positivepets.forms import CustomUserCreationForm,CustomUserChangePictureForm, PictureSearchForm
+from positivepets.forms import CustomUserCreationForm,CustomUserChangePictureForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.files import File
 from django.conf import settings
-from bs4 import BeautifulSoup
-import requests
 import os
-import csv
-import json
-from collections import defaultdict
-from positivepets.views.colors import color_map
+from positivepets.utils.colors import color_map
 from positivepets.views.chat_views import chat_message_create
-from positivepets.views.index_views import IndexView
-from positivepets.views.email_views import MailCreate
 
 class UserFormView(View):
     form_class = CustomUserCreationForm
@@ -28,8 +21,18 @@ class UserFormView(View):
         return render(request, self.template_name, {'form':form, 'color': request.user.color})
 
     def post(self, request):
+        """
+        Create a new user
+        Assign them to a default friend group
+        Set their active friend group to the default friend group
+        Give them a default color (light gray) - they can change it themselves
+
+        :param request:
+        :return:
+        """
+
+        # need request.FILES or image upload won't work.
         form = self.form_class(request.POST, request.FILES)
-        #need request.FILES or image upload won't work.
 
         if form.is_valid():
             user = form.save(commit=False)
@@ -45,12 +48,9 @@ class UserFormView(View):
                     pass
             user.set_password(password)
             user.invitedby = request.user
+            user.color = 'lightgray'
             user.save()
             user = authenticate(username=user.username, password=password)
-
-            #1. set a default entry in friendgroupuser and userstate tables
-            #2. in index page load, send list of this user's groups as well as the userstate in the context
-            #3. have the drop down menu save to userstate
 
             # Assign them to a default user group
             fg = FriendGroup.objects.get(name='Unassigned')
@@ -69,8 +69,7 @@ class UserFormView(View):
 
             if user is not None:
                 if user.is_active:
-                    #login(request, user)
-                    return redirect('positivepets:index')
+                    return redirect('positivepets:profile')
 
         return render(request, self.template_name, {'form':form, 'color': request.user.color})
 
@@ -101,78 +100,9 @@ def color_save_view(request):
 
     return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id': request.user.id, 'action': 'show'}))
 
-
-def test_view(request):
-    """  Next:  talk about your pet:
-    1.  form to post a comment
-    2.  Model to store comments about a {pet/picture} by a user.  Fields:  user (fk), pet(fk), comment, datetime
-    2.  display box to show all of the comments that have been posted   """
-
-    years_old = 30
-    daisies = 2
-    array_city_capital = ["Paris", "London", "Washington"]
-    user_name = request.user.username
-    user_id = 5 # request.user.id
-    user = CustomUser.objects.get(id=user_id)
-    testy = "<b> dynamic html doesn't work </b>"
-
-    if request.method == 'POST':
-        form = CustomUserChangePictureForm(request.POST, request.FILES)
-        a = CustomUser.objects.get(id=request.user.id)
-        a.picture = request.FILES['picture']
-        a.save()
-        url = reverse('positivepets:index')
-        return HttpResponseRedirect(url)
-
-    context = {"testy":testy, "user":user, "user_name":user_name, "daisies":daisies, "years":years_old, "array_city":array_city_capital}
-    return render(request, 'positivepets/test/test_template.html', context)
-
 def about_view(request):
     return render(request, 'positivepets/about.html')
 
-def get_json_info():
-    csv_file = open('static/breeds.csv', 'r')
-    reader = csv.DictReader(csv_file)
-    animal_names = reader.fieldnames
-    breed_dict = defaultdict(list)
-
-    for row in reader:
-        for j in range(0,len(row)):
-            if row[animal_names[j]] != "":
-                breed_dict[animal_names[j]].append(row[animal_names[j]])
-
-    json_breeds = json.dumps(breed_dict)
-    json_animals = json.dumps(animal_names)
-    return json_breeds, json_animals
-
-def picture_search(request):
-    json_breeds, json_animals = get_json_info()
-    context = {'json_animals': json_animals, 'json_breeds':json_breeds, 'color':request.user.color}
-    print(json_animals)
-    return render(request, 'positivepets/animal_shelter.html',context)
-
-def do_search(request):
-    if request.POST:
-        animal_type = request.POST['animal_type']
-        breed = request.POST['breed']
-        baby_or_fullgrown = request.POST['baby_or_fullgrown']
-        key_word_string = animal_type+'+' + breed + "+" + baby_or_fullgrown
-
-        user_search_words = request.POST['search_words']
-        user_search_words = '+'.join(user_search_words.split())
-        key_word_string = key_word_string + "+" + user_search_words
-
-        search_url = "https://www.google.com/search?tbm=isch&q=" + key_word_string + "&safe=active"
-        source = requests.get(search_url).text
-        soup = BeautifulSoup(source, 'lxml')
-        img_list = []
-        for img in soup.find_all('img'):
-            img_list.append(img['src'])
-
-    json_breeds, json_animals = get_json_info()
-
-    context = {'json_animals': json_animals, 'json_breeds': json_breeds, "image_list":img_list, 'color':request.user.color}
-    return render(request, 'positivepets/animal_shelter.html', context)
 
 def change_active_group(request,redirect):
     if request.POST:
@@ -189,7 +119,6 @@ def change_active_group(request,redirect):
         # get the groups for those ids (this user's groups)
         groups = FriendGroup.objects.filter(pk__in=group_ids)
 
-
         # choose the group id that matches the selected name
         # save that id as ref_id in user_state
 
@@ -201,9 +130,5 @@ def change_active_group(request,redirect):
     elif redirect == 'email':
         #return MailCreate.as_view()
         return HttpResponseRedirect(reverse('positivepets:mail_create', kwargs={'id':request.user.id, 'reply_type':'none'}))
-    if redirect == 'index':
-        return HttpResponseRedirect(reverse('positivepets:index'))
-
-def shelter_adopt(request, friend_id):
-
-    return HttpResponseRedirect(reverse('positivepets:user_pets', kwargs={'id':friend_id}))
+    if redirect == 'profile':
+        return HttpResponseRedirect(reverse('positivepets:profile'))

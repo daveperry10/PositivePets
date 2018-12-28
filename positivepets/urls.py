@@ -1,5 +1,3 @@
-from django.contrib import admin
-from django.urls import path
 from . import views
 
 from django.conf.urls import url
@@ -16,40 +14,42 @@ app_name = 'positivepets'
 
 urlpatterns = [
 
-# INDEX #
+# PROFILE #
     # /positivepets/
-    url(r'^$',views.index_views.redirect, name='index'),
-    url(r'profile/(?P<friend_id>[0-9]+)/(?P<action>edit_bio|show|edit_picture)/$', views.index_views.IndexView.as_view(), name='profile'),
+    url(r'^$', views.profile_views.redirect),
+    url(r'profile/(?P<friend_id>[0-9]+)/(?P<action>edit_bio|show|edit_picture)/$', views.profile_views.ProfileView.as_view(), name='profile'),
 
     # /positivepets/5/action/
-    url(r'^(?P<friend_id>[0-9]+)/user_picture_save/$', views.index_views.user_picture_save, name='user_picture_save'),
-    url(r'^(?P<friend_id>[0-9]+)/user_picture_edit/$', views.index_views.user_picture_edit, name='user_picture_edit'),
-    url(r'^(?P<friend_id>[0-9]+)/bio_save/$', views.index_views.bio_save, name='bio_save'),
-    url(r'^(?P<friend_id>[0-9]+)/bio_edit/$', views.index_views.bio_edit, name='bio_edit'),
+    url(r'^(?P<friend_id>[0-9]+)/user_picture_save/$', views.profile_views.user_picture_save, name='user_picture_save'),
+    url(r'^(?P<friend_id>[0-9]+)/user_picture_edit/$', views.profile_views.user_picture_edit, name='user_picture_edit'),
+    url(r'^(?P<friend_id>[0-9]+)/bio_save/$', views.profile_views.bio_save, name='bio_save'),
+    url(r'^(?P<friend_id>[0-9]+)/bio_edit/$', views.profile_views.bio_edit, name='bio_edit'),
 
-# DETAIL #
+    # /positivepets/change_active_group/
+    url(r'^change_active_group/(?P<redirect>(chat|email|profile))/$', views.misc_views.change_active_group, name='change_active_group'),
+
+    # PET DETAIL #
     # /positivepets/71/
-    url(r'^(?P<pk>[0-9]+)/(?P<edit>[0-9]+)/$', views.detail_views.DetailView.as_view(), name='detail'),
+    url(r'^(?P<pk>[0-9]+)/(?P<edit>[0-9]+)/$', views.pet_detail_views.PetDetailView.as_view(), name='pet_detail'),
 
-    # /positivepets/5/description_save/
-    url(r'^(?P<pk>[0-9]+)/description_save/$', views.detail_views.description_save, name='description_save'),
+    # /positivepets/5/pet_description_save/
+    url(r'^(?P<pk>[0-9]+)/pet_description_save/$', views.pet_detail_views.pet_description_save, name='pet_description_save'),
 
-    # /positivepets/5/description_edit/
-    url(r'^(?P<pk>[0-9]+)/description_edit/$', views.detail_views.description_edit, name='description_edit'),
+    # /positivepets/5/pet_description_edit/
+    url(r'^(?P<pk>[0-9]+)/pet_description_edit/$', views.pet_detail_views.pet_description_edit, name='pet_description_edit'),
 
 # USER PETS #
     # /positivepets/user/5/
-    #url(r'^user/(?P<pk>[0-9]+)/$', views.user_pet_views.UserPets.as_view(), name='user_pets'),
-    url(r'^user/(?P<friend_id>[0-9]+)/$', views.user_pet_views.user_pet_view, name='user_pets'),
+    url(r'^user/(?P<friend_id>[0-9]+)/$', views.user_pets_views.user_pets_view, name='user_pets'),
 
     # /positivepets/pet/add/
-    url(r'pet/add/$', views.user_pet_views.PetCreate.as_view(), name='pet_add'),
+    url(r'pet/add/$', views.user_pets_views.PetCreate.as_view(), name='pet_add'),
 
     # /positivepets/pet/2/
-    url(r'pet/(?P<pk>[0-9]+)/$', views.user_pet_views.PetUpdate.as_view(), name='pet_update'),
+    url(r'pet/(?P<pk>[0-9]+)/$', views.user_pets_views.PetUpdate.as_view(), name='pet_update'),
 
     # /positivepets/pet/2/delete/
-    url(r'pet/(?P<pk>[0-9]+)/delete/$', views.user_pet_views.PetDelete.as_view(), name='pet_delete'),
+    url(r'pet/(?P<pk>[0-9]+)/delete/$', views.user_pets_views.PetDelete.as_view(), name='pet_delete'),
 
 # CHAT #
     # /positivepets/chatroom/new/
@@ -70,15 +70,10 @@ urlpatterns = [
     # /positivepets/about/
     url(r'^about/$', views.misc_views.about_view, name='about'),
 
-# SHELTER#
-    url(r'^picture_search/$', views.misc_views.picture_search, name='picture_search'),
-    url(r'^do_search/$', views.misc_views.do_search, name='do_search'),
-    url(r'^shelter_adopt/$', views.misc_views.shelter_adopt, name='shelter_adopt'),
-
-# TEST #
-    # /positivepets/test/
-    url(r'^test/$', views.misc_views.test_view, name='test_view'),
-    url(r'^change_active_group/(?P<redirect>(chat|email|index))/$', views.misc_views.change_active_group, name='change_active_group'),
+# ANIMAL SHELTER#
+    url(r'^picture_search/$', views.animal_shelter_views.picture_search, name='picture_search'),
+    url(r'^do_search/$', views.animal_shelter_views.do_search, name='do_search'),
+    url(r'^shelter_adopt/$', views.animal_shelter_views.shelter_adopt, name='shelter_adopt'),
 
 #ICON
     url(r'^pawprint.ico$', RedirectView.as_view(url=staticfiles_storage.url('images/pawprint.ico')), name="pawprint"),

@@ -57,32 +57,38 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-4">
-                                <button formaction="{% url 'positivepets:do_search' %}" onclick="saveState()" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Submit</button>
+                                <button formaction="{% url 'positivepets:do_search' %}" onclick="saveState()" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Search</button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="col-sm-4">
-                <img id="placehere" src="{{user.picture.url}}" style="height:100%; width:100%; margin:0 0 10px 10px; border-radius:5px; border: 5px solid {{color}};">
-            </div>
-            <div class="col-sm-3">
-                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
 
-                        <input name="adopted_pet_name" id="adopted_pet_name" size="15" placeholder="Name this pet" style="margin: 10px 0 0 10px;">
-                        <button formaction="{% url 'positivepets:shelter_adopt' %}" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Adopt</button>
+            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div id="placehere" class="col-sm-4">
+                    <!--<img src="{{user.picture.url}}" style="height:100%; width:100%; margin:0 0 10px 10px; border-radius:5px; border: 5px solid {{color}};">
+                    -->
+                    <input type="image" src="{{user.picture.url}}" id="selected_image" name="selected_image" style="height:100%; width:100%; margin:0 0 10px 10px; border-radius:5px; border: 5px solid {{color}};">
 
-                </form>
+                </div>
+                <div class="col-sm-3">
 
-            </div>
+                    <input type="hidden" id="selected_animal" name="selected_animal">
+                    <input type="hidden" id="selected_breed" name="selected_breed" >
+                    <input type="hidden" id="selected_image_url" name="url">
+
+                    <input name="adopted_pet_name" id="adopted_pet_name" size="15" placeholder="Name this pet" style="margin: 10px 0 0 10px;">
+                    <button formaction="{% url 'positivepets:shelter_adopt' %}" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Adopt</button>
+                </div>
+            </form>
         </div>
 
         <hr style="border-color:gray;">
 
         {% for img in image_list %}
-            <!--<a> href="{% url 'positivepets:pet_add' %} -->
-                    <img src={{img}} onclick="makeBig('{{img}}')" onmouseover="makeBig('{{img}}')" style="margin: 3px 0 0 0; border-radius:5px; border: 5px solid {{color}}; height:100px; width:100px; object-fit: cover;">
+
+                    <img src={{img}} onclick="makeBig('{{img}}')" onmouseover="mouseOver(this)" onmouseout="mouseOut(this, '{{user.color}}')" style="margin: 3px 0 0 0; border-radius:5px; border: 5px solid {{color}}; height:100px; width:100px; object-fit: cover;">
 
         {% endfor %}
     </div>

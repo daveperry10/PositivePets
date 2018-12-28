@@ -3,21 +3,33 @@
 {% block body %}
 <div class="container-fluid">
     <div class="container" style="border:1px solid #cecece;">
-        <img src="{{user.picture.url}}" class="icon" style="border-color:{{color}}; border-radius:5px;">
-        <span style="font-size:20pt;"> {{friend.username | capfirst}}'s Pets:</span>
+
+         <div class="row">
+             <div class="col-md-9" style="font-size:20pt;">
+                 <a href="{% url 'positivepets:profile' user.id 'show' %}">
+                     <img src="{{user.picture.url}}" class="icon" style="border-color:{{color}}; border-radius:5px;">
+                 </a>
+                 <span style="font-size:20pt;"> {{friend.username | capfirst}}'s Pets:</span>
+             </div>
+
+             <div class="col-md-3">
+
+             </div>
+        </div>
+
         <hr style="border-color:gray;">
 
         <div class="row-md-4">
             {% for pet in pet_list %}
 
                 <div class="col-md-4">
-                    <a href="{% url 'positivepets:detail' pet.id '0' %}">
+                    <a href="{% url 'positivepets:pet_detail' pet.id '0' %}">
                         <img src="{{pet.picture.url}}" class="petpicture">
                     </a>
 
                     <h2> {{ pet.name }} </h2>
 
-                    <a href="{% url 'positivepets:detail' pet.id '0' %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;"> View Details </a>
+                    <a href="{% url 'positivepets:pet_detail' pet.id '0' %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;"> View Details </a>
                     {% if friend.username == user.username %}
 
                         <a href="{% url 'positivepets:pet_update' pet.id %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;"> Update </a>

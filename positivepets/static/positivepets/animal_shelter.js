@@ -4,6 +4,7 @@
 function loadMe(animal_array, breed_dict){
 
     var animalSelect = this.document.getElementById("animal_type");
+    var breedSelect = this.document.getElementById("breed");
 
     var animal = localStorage.getItem("animalSelect")
     //alert(animal)
@@ -18,11 +19,10 @@ function loadMe(animal_array, breed_dict){
     }
     fillBreeds(breed_dict);
 
-
-    //animalSelect.innerHTML="";  // clean out the select list
-
-
+    document.getElementById("selected_animal").value =  animalSelect.value;
+    document.getElementById("selected_breed").value =  breedSelect.value;
 }
+
 
 function fillBreedsJson(jsonObject){
     var breed_dict = JSON.parse(jsonObject)
@@ -41,7 +41,7 @@ function fillBreeds(breed_dict){
             }
     }
 
-    // get the correct array out of the dictionary
+    // get the list of pets  -- breed_dict is a dict of arrays; animal is the key
     var breed_array = breed_dict[animal]
 
     // populate the select element
@@ -53,9 +53,13 @@ function fillBreeds(breed_dict){
         breedSelect.add(option)
     }
 
+
     breed = localStorage.getItem("breedSelect")
-    if (breed != null){
+    if (breed in breed_array){
         breedSelect.value = localStorage.getItem("breedSelect")
+    }
+    else{
+        breedSelect.value = breed_array[0];
     }
 
     searchWords = localStorage.getItem("searchWordsSelect")
@@ -63,14 +67,25 @@ function fillBreeds(breed_dict){
     if (searchWords != null){
         searchWordsSelect.value = searchWords
     }
-
 }
 
 function makeBig(img_url){
     //alert("make it big")
     var elem = document.createElement("img");
     elem.setAttribute("src",img_url);
-    document.getElementById("placehere").appendChild(elem);
+    newstring = "<img src='";
+    fullstring = newstring.concat(img_url).concat("'>");
+    document.getElementById("placehere").innerHTML = fullstring;
+
+    document.getElementById("selected_image_url").value =  img_url;
+
+}
+function mouseOver(my_image){
+    my_image.style.borderColor = "yellow";
+}
+
+function mouseOut(my_image, color){
+    my_image.style.borderColor = color;
 }
 
 function saveState(){
@@ -82,6 +97,9 @@ function saveState(){
 
     var searchWordsSelect = document.getElementById("search_words")
     localStorage.setItem("searchWordsSelect",searchWordsSelect.value)
+
+    document.getElementById("selected_animal").value =  animalSelect.value;
+    document.getElementById("selected_breed").value =  breedSelect.value;
     }
 
 function selectChange(){

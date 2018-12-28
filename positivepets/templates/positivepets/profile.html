@@ -10,7 +10,7 @@
                 <p style="margin:5px;">{{friend.username | capfirst}}'s Profile<p>
             </div>
             <div class="col-md-3">
-                {% include 'positivepets/friendgroup_picker_template.html' with page='index'%}
+                {% include 'positivepets/friendgroup_picker_template.html' with page='profile'%}
             </div>
         </div>
 
@@ -18,51 +18,52 @@
         <div class="row">
 
             <! COLUMN 1  -- FRIENDS >
-            <div class="col-md-2 col-sm-3">
-                <table>
-                    <tbody>
+            <div class="col-sm-3">
+
                         {% for u in user_list %}
+                            <!--<span class="text-nowrap">-->
                             {% if u.username != "admin" %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'positivepets:profile' u.id 'show'%}">
+                                        <a style="display:inline-block;" href="{% url 'positivepets:profile' u.id 'show'%}">
+
                                             <img class="icon" src="{{u.picture.url}}"
-                                                 style="border-radius:5px; margin:7px; padding:0; border-width:5px;border-style:solid; border-color:{{friend.color}};">
-                                         </a>
-                                    </td>
-                                    <td>
-                                        {% if u.id == user.id %}
-                                            <b> {{ u.username | capfirst }} </b>
-                                        {% else %}
-                                            {{ u.username | capfirst }}
-                                        {% endif %}
-                                     </td>
-                                </tr>
+                                                 style="border-radius:5px; margin:7px 7px 0px 7px; padding:0; border-width:5px;border-style:solid; border-color:{{friend.color}};">
+                                            <div class="caption">
+                                                &nbsp
+                                                {% if u.id == user.id %}
+                                                    <b> {{ u.username | capfirst }} </b>
+                                                {% else %}
+                                                    {{ u.username | capfirst }}
+                                                {% endif %}
+                                            </div>
+                                        </a>
+
+
                             {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+                         {% endfor %}
             </div>
 
             <!-- COLUMN 2 -- PICTURE -->
-            <div class="col-md-8 col-sm-7">
+            <div class="col-sm-7">
                 <div class="row">
                     <div class="col-sm-7">
                         {% if friend.username != "admin" %}
                             <div>
-                                <img src="{{friend.picture.url}}"  style="border-radius:5px; border: 5px solid {{color}}; height:100%; width:100%; object-fit: cover;">
+                                <a href="{% url 'positivepets:user_pets' friend.id %}">
+                                    <img src="{{friend.picture.url}}"  style="border-radius:5px; border: 5px solid {{friend.color}}; height:100%; width:100%; object-fit: cover;">
+                                </a>
                             </div>
                         {% endif %}
                     </div>
                     <div class="col-sm-5 centered">
-                        <br><br>
+                        <br>
                         <span style="font-size:14pt;"> Profile Details </span>
                         <br>
                         <br> Name: {{friend.username | capfirst}}
                         <br> Town: {{friend.city | capfirst}}
                         <br> Birthday: {{friend.birthday | date:"F jS"}}
                         <br> Favorite Color: {{color | capfirst}}
-                        <br> Invited By: {{friend.invitedby.username | capfirst}}
+                        <!--<br> Invited By: {{friend.invitedby.username | capfirst}}-->
                         <br>
                     </div>
                 </div>  <!end first row inside big middle column>
@@ -76,25 +77,25 @@
 
                             <div class="form-group" style="margin:0px;">
                                 <button formaction="{% url 'positivepets:bio_edit' user.id %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{color}};border-color:gray;" type="submit"
+                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
                                         class="btn btn-default" >Edit Bio</button>
                             </div>
 
                             <div class="form-group" style="margin:0px;">
                                 <button formaction="{% url 'positivepets:user_pets' user.id %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{color}};border-color:gray;"
+                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;"
                                         class="btn btn-default" >Edit Pets</button>
                             </div>
 
                             <div class="form-group" style="margin:0px;">
                                 <button formaction="{% url 'positivepets:color_change_view' %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{color}};border-color:gray;" type="submit"
+                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
                                         class="btn btn-default">Edit Color</button>
                             </div>
 
                             <div class="form-group" style="margin:0px;">
                                 <button formaction="{% url 'positivepets:user_picture_edit' user.id %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{color}};border-color:gray;" type="submit"
+                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
                                         class="btn btn-default" >Edit Picture</button>
                             </div>
 
@@ -130,6 +131,10 @@
                         {% else %} <! show display text and edit button>
                             <br><span style="font-size:14pt;"> All About Me </span> <br><br> {{friend.bio}}
                         {% endif %}
+
+                    {% else %} <! show display text and edit button>
+                            <p style="margin: 0 0 0 10px; font-size:14pt;"> All About {{friend.username | capfirst}} </p>
+                            <p style="margin: 0 0 0 10px;">{{friend.bio}}</p>
                     {% endif %}
                 </div>
 
@@ -138,9 +143,9 @@
             <!-- COLUMN 3 -- PETS -->
              <div class="col-sm-2">
                  {% for p in pet_list %}
-                     <a href="{% url 'positivepets:detail' p.id '0' %}">
+                     <a href="{% url 'positivepets:pet_detail' p.id '0' %}">
                          <div class="row">
-                             <img src="{{p.picture.url}}" style=" border-radius:5px; border: 5px solid {{color}}; height:100%; width:100%; object-fit: cover;">
+                             <img src="{{p.picture.url}}" style="margin:0 20px 0 0; border-radius:5px; border: 5px solid {{friend.color}}; height:90%; width:90%; object-fit: cover;">
                          </div>
                      </a>
                     <br>

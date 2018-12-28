@@ -56,7 +56,7 @@ class Pet(models.Model):
     description = models.CharField(max_length=250, blank=True, null=True)
 
     def get_absolute_url(self):
-        return reverse('positivepets:detail', kwargs={'pk': self.pk, 'edit': '0'})
+        return reverse('positivepets:pet_detail', kwargs={'pk': self.pk, 'edit': '0'})
 
     def __str__(self):
         return self.name

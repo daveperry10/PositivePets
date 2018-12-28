@@ -25,7 +25,7 @@
                 <br>
                 {% if user.id == owner.id %}
                     {% if edit == '1' %}  <! show edit box and save button>
-                        <form class="form-horizontal" action="{% url 'positivepets:description_save' pet.id %}" method="post" enctype="multipart/form-data">
+                        <form class="form-horizontal" action="{% url 'positivepets:pet_description_save' pet.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
                                 <textarea name="bigtext" cols="60" rows="15"> {{description}} </textarea>
@@ -37,7 +37,7 @@
                         </form>
                     {% else %} <! show display text and edit button>
                         {{description}} <br><br>
-                        <form class="form-inline" action="{% url 'positivepets:description_edit' pet.id %}" method="post" enctype="multipart/form-data">
+                        <form class="form-inline" action="{% url 'positivepets:pet_description_edit' pet.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <button style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;" type="submit" class="btn btn-default">Edit</button>
                         </form>

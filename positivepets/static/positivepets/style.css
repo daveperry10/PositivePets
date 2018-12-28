@@ -42,10 +42,10 @@ color: yellow;
 }
 
 .icon{
-  height: 60px;
-  width: 60px;
+  height: 50px;
+  width: 50px;
   /*padding: 0 15px 15px 0;*/
-  margin: 7px;
+  margin: 5px;
   border-width:5px;
   border-style:solid;
   border-color:lightgray;

@@ -1,8 +1,8 @@
-from positivepets.models import Pet, Chat, CustomUser, Mail, FriendGroupUser, FriendGroup, UserState
+from positivepets.models import Chat, FriendGroup, UserState
 from datetime import datetime
 from django.shortcuts import render
-from .colors import color_map
-from positivepets.utils import get_users
+from positivepets.utils.colors import color_map
+from positivepets.utils.utils import get_users
 from dateutil import tz
 
 def chat_message_create(request):
