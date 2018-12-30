@@ -43,10 +43,6 @@ class UserState(models.Model):
     ref_id = models.IntegerField(default=0)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1, unique=True)
 
-class UserUIPermissions(models.Model):
-    name = models.CharField(max_length=50)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
-
 class Pet(models.Model):
     name = models.CharField(max_length=250)
     type = models.CharField(max_length=250)
