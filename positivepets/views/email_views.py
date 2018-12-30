@@ -34,7 +34,8 @@ def email_send(request):
 
 def email_read_show(request, message_num):
     message_list = Mail.objects.filter(recipient=request.user.id).order_by('-timestamp')
-    email = message_list[int(message_num)]
+    #email = message_list[int(message_num)]
+    email = Mail.objects.get(id=message_num)
     email.status = EMAIL_STATUS_READ
     email.save()
 

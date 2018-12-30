@@ -36,7 +36,7 @@ def do_search(request):
 
 
 def get_json_info():
-    csv_file = open('/static/breeds.csv', 'r')
+    csv_file = open('static/breeds.csv', 'r')
     reader = csv.DictReader(csv_file)
     animal_names = reader.fieldnames
     breed_dict = defaultdict(list)

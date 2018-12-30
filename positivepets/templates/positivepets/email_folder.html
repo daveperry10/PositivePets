@@ -51,7 +51,7 @@
 
                      <tr>
                          <td>
-                             <form class="form-inline" action="{% url 'positivepets:email_read_show' forloop.counter0 %}" method="post">
+                             <form class="form-inline" action="{% url 'positivepets:email_read_show' msg.id %}" method="post">
                                 {% csrf_token %}
                                 {% if msg.status == 1 %}
                                     <button style="width:50; color:{{button_text_color}};background-color: {{user.color}};" type="submit" name="button" class="btn btn-default btn-sm">New</button>
