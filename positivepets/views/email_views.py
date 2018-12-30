@@ -1,4 +1,4 @@
-from positivepets.models import Email, CustomUser, FriendGroup, UserState
+from positivepets.models import Mail, CustomUser, FriendGroup, UserState
 from django.views.generic.edit import CreateView
 from datetime import datetime
 from django.db.models import Max, Min
@@ -14,12 +14,12 @@ EMAIL_STATUS_UNREAD = 1
 EMAIL_STATUS_READ = 2
 
 def email_send(request):
-    mx = Email.objects.all().aggregate(Max('msg_id'))
+    mx = Mail.objects.all().aggregate(Max('msg_id'))
     msg_id = mx['msg_id__max'] + 1
     recipient_list = request.POST.getlist('recipients')
     form = EmailForm
     for r in recipient_list:
-        m = Email()
+        m = Mail()
         m.msg_id = msg_id
         m.timestamp = datetime.now()
         m.sender = request.user
@@ -33,13 +33,13 @@ def email_send(request):
     return render(request, 'positivepets/close_me.html')
 
 def email_read_show(request, message_num):
-    message_list = Email.objects.filter(recipient=request.user.id).order_by('-timestamp')
+    message_list = Mail.objects.filter(recipient=request.user.id).order_by('-timestamp')
     email = message_list[int(message_num)]
     email.status = EMAIL_STATUS_READ
     email.save()
 
     # take django query_set and turn it into a comma-delimited list of usernames
-    recipient_list = list(Email.objects.filter(msg_id=email.msg_id))
+    recipient_list = list(Mail.objects.filter(msg_id=email.msg_id))
     my_list  = [o.recipient.username.title() for o in recipient_list]
     recipient_string = ", ".join(my_list)
     context = {'email': email, 'recipients': recipient_string}
@@ -50,9 +50,9 @@ def email_compose_show(request, reply_type, email_id):
     recipient_list = []
     context = {}
     if reply_type == 'reply-all':
-        msg = Email.objects.get(id=email_id)
+        msg = Mail.objects.get(id=email_id)
 
-        for item in Email.objects.filter(msg_id=msg.msg_id):  #msg_id is a common id for all messages generated in a reply-all
+        for item in Mail.objects.filter(msg_id=msg.msg_id):  #msg_id is a common id for all messages generated in a reply-all
             recipient_list.append(item.recipient.id)
 
         recipient_list.append(msg.sender.id)
@@ -61,7 +61,7 @@ def email_compose_show(request, reply_type, email_id):
 
     elif reply_type == 'reply':
         id = email_id
-        msg = Email.objects.get(id=id)
+        msg = Mail.objects.get(id=id)
         recipient_list.append(msg.sender.id)
         context['subject'] = msg.subject
         if msg.message is None:
@@ -90,7 +90,7 @@ def email_compose_show(request, reply_type, email_id):
 def email_folder_show(request, folder):
     context = {'folder':folder}
 
-    context['inbox'] = Email.objects.filter(recipient_id=request.user).filter(sender__in=get_users(request.user.id)).order_by('-timestamp')
+    context['inbox'] = Mail.objects.filter(recipient_id=request.user).filter(sender__in=get_users(request.user.id)).order_by('-timestamp')
 
     context['color'] = request.user.color
     context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
@@ -105,7 +105,7 @@ def email_folder_show(request, folder):
     # Need to reduce to one row for display.
 
     # result is a list of email objects
-    temp_sent_list = Email.objects.filter(sender_id=request.user.id).filter(recipient__in=get_users(request.user.id)).order_by('-timestamp')
+    temp_sent_list = Mail.objects.filter(sender_id=request.user.id).filter(recipient__in=get_users(request.user.id)).order_by('-timestamp')
     sent_mail = []
     this_message = temp_sent_list[0]
     this_message.recipient.username = ""

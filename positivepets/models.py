@@ -82,7 +82,7 @@ class Chat(models.Model):
     def __str__(self):
         return self.comment
 
-class Email(models.Model):
+class Mail(models.Model):
     msg_id = models.IntegerField(default=0)
     timestamp = models.DateTimeField()
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=0,  related_name='as_sender')

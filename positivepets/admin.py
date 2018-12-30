@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pet, CustomUser, Email, Chat
+from .models import Pet, CustomUser, Mail, Chat
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 

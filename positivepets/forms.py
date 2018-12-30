@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Chat, Pet, Email
+from .models import Chat, Pet, Mail
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -30,7 +30,7 @@ class ChatMessageForm(forms.ModelForm):
 
 class EmailForm(forms.ModelForm):
    class Meta:
-        model = Email
+        model = Mail
         fields = ['message', 'subject']
 
 class PetDescriptionForm(forms.ModelForm):
