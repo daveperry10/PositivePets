@@ -1,53 +1,39 @@
-<! -- name must be named "modelname_form"
-
 {% extends 'positivepets/base.html' %}
 {% block title %} Message Board{% endblock %}
 {% load tz %}
 
 {% block body %}
 <div class="container" style="border:1px solid #cecece;">
-        <div class="row">
-            <div class="col-md-9" style="font-size:20pt;">
-                <span style="margin:5px;font-size:20pt;">
-                    <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
-                     Welcome to the Chat Room!
-                </span>
-            </div>
-            <div class="col-md-3">
-                {% include 'positivepets/friendgroup_picker_template.html' with page='chat'%}
-            </div>
-
+    <div class="row">
+        <div class="col-md-7" style="font-size:20pt;">
+            <span style="margin:5px;font-size:20pt;">
+                <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
+                 Welcome to the Chat Room!
+            </span>
+        </div>
+        <div class="col-md-5">
+            {% include 'positivepets/friendgroup_picker_template.html' with page='chat'%}
+        </div>
+    </div>
     <hr style="border-color:gray;">
 
+    <h4>Compose Chat Message</h4>
     <div class="row">
         <div class="col-sm-we col-sm-4">
-            <h4>Compose Chat Message</h4>
-                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
 
-                    <div class="form-group">
-                        <textarea class="form-control" name="textbox" rows="6" placeholder="Type your chat message here" style="margin: 0 10px 0 0;"> </textarea>
+            <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                <div class="form-group">
+                    <textarea  class="form-control" name="textbox" rows="6" placeholder="Type your chat message here" style="margin: 0 10px 0 0px;"> </textarea>
+                    <div class="row">
+                        <button style="margin: 10px 0 0 15px; color:{{button_text_color}};background-color: {{user.color}};" formaction="{% url 'positivepets:chatmessage_create' 'submit' %}" type="submit" class="btn btn-default">Submit</button>
+                        <button style="margin: 10px 0 0 5px; color:{{button_text_color}};background-color: {{user.color}};" formaction="{% url 'positivepets:chatmessage_create' 'refresh' %}" type="submit" class="btn btn-default">Refresh</button>
                     </div>
-
-
-                    <div class="form-group">
-
-                        <div class="col-sm-offset-2 col-sm-10 center-block">
-
-                            <button style="color:{{button_text_color}};background-color: {{user.color}};" type="submit" class="btn btn-default">Submit</button>
-                        </div>
-                    </div>
-                </form>
-
-                <a href="{% url 'positivepets:chatmessage_create' %}">
-                    <button style="color:{{button_text_color}};background-color: {{user.color}};" type="submit" class="btn btn-default">Refresh</button>
-                </a>
-
-
+                </div>
+            </form>
         </div>
-
-        <div class="col-sm-we col-sm-8">
-             <table style="background-color:white;" class="table table-bordered table-condensed">
+        <div class="col-sm-we col-sm-8" style="padding: 0 10px 10px 10px;">
+             <table style="margin:0 10px 0 0; background-color:white;" class="table table-bordered table-condensed">
                  <thead style="background-color:lightgray">
                      <th>Picture</th>
                      <th>Name</th>
@@ -55,17 +41,15 @@
                      <th>Time</th>
                  </thead>
                  <tbody>
-                 {% for item in comment_list %}
-                 <tr>
-                     <td> <img src="{{item.user.picture.url}}" style=width:30px;height:30px;"></td>
-                     <td style="color:{{item.user.color}};"><b> {{item.user.username| capfirst}} </b></td>
-                     <td> {{item.comment}} </td>
-                     <td> {{item.timestamp| utc | date:"D, P"}} </td>
-                 </tr>
-                 {% endfor %}
+                     {% for item in comment_list %}
+                     <tr>
+                         <td> <img src="{{item.user.picture.url}}" style=width:30px;height:30px;"></td>
+                         <td style="color:{{item.user.color}};"><b> {{item.user.username| capfirst}} </b></td>
+                         <td> {{item.comment}} </td>
+                         <td> {{item.timestamp| utc | date:"D, P"}} </td>
+                     </tr>
+                     {% endfor %}
                  </tbody>
-                 <br>
-
             </table>
         </div>
     </div>

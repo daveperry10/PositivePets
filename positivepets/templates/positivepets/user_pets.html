@@ -29,15 +29,15 @@
 
                     <h2> {{ pet.name }} </h2>
 
-                    <a href="{% url 'positivepets:pet_detail' pet.id '0' %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;"> View Details </a>
+                    <a href="{% url 'positivepets:pet_detail' pet.id '0' %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};"> View Details </a>
                     {% if friend.username == user.username %}
 
-                        <a href="{% url 'positivepets:pet_update' pet.id %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;"> Update </a>
+                        <a href="{% url 'positivepets:pet_update' pet.id %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};"> Update </a>
 
                         <form action="{% url 'positivepets:pet_delete' pet.id %}" method="post" style="display: inline;">
                             {% csrf_token %}
                             <input type="hidden" name="pet_id" value="{{pet.id}}"/>
-                            <button type="submit" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};border-color:gray;">
+                            <button type="submit" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </button>
                         </form>
@@ -55,8 +55,6 @@
             {% endfor %}
         </div>
     </div>
-
-    <br><br>
 </div>
 {% endblock %}
 

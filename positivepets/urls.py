@@ -53,12 +53,14 @@ urlpatterns = [
 
 # CHAT #
     # /positivepets/chatroom/new/
-    url(r'chatroom/new/$', views.chat_views.chat_message_create, name='chatmessage_create'),
+    url(r'chatroom/(?P<action>(submit|refresh))/$', views.chat_views.chat_message_create, name='chatmessage_create'),
 
 # EMAIL #
-    # /positivepets/mail/new/
-    url(r'mail/new/(?P<reply_type>(none|reply|reply-all))/(?P<id>[0-9]+)/$', views.email_views.MailCreate.as_view(), name='mail_create'),
-    url(r'mail/(?P<message_num>[0-9]+)/$', views.email_views.mail_view, name='mail_view'),
+    # /positivepets/email/...
+    url(r'email/folder/(?P<folder>(inbox|sent_mail|))$', views.email_views.email_folder_show, name='email_folder_show'),
+    url(r'email/read/(?P<message_num>[0-9]+)/$', views.email_views.email_read_show, name='email_read_show'),
+    url(r'email/compose/(?P<reply_type>(none|reply|reply-all))/(?P<email_id>[0-9]+)/$', views.email_views.email_compose_show, name='email_compose_show'),
+    url(r'email/send/$', views.email_views.email_send, name='email_send'),
 
 # ADMIN #
     # /positivepets/register/

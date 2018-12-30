@@ -5,7 +5,7 @@ from positivepets.utils.colors import color_map
 from positivepets.utils.utils import get_users
 from dateutil import tz
 
-def chat_message_create(request):
+def chat_message_create(request, action):
     model = Chat
     fields = ['comment']
     context = {}
@@ -16,13 +16,14 @@ def chat_message_create(request):
     context['user_friend_groups'] = user_friend_groups
     context['selected_friend_group'] = selected_friend_group
 
-    if request.method == 'POST':
-        msg = Chat()
-        msg.timestamp = datetime.now()
-        msg.user = request.user
-        msg.comment = request.POST['textbox']
-        msg.group = selected_friend_group
-        msg.save()
+    if action == 'submit':
+        if request.method == 'POST':
+            msg = Chat()
+            msg.timestamp = datetime.now()
+            msg.user = request.user
+            msg.comment = request.POST['textbox']
+            msg.group = selected_friend_group
+            msg.save()
 
     now = datetime.now()    #to_zone = tz.tzlocal()
     to_zone = tz.gettz("America/New_York")

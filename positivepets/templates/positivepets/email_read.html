@@ -1,5 +1,3 @@
-<! -- name must be named "modelname_form"
-
 {% extends 'positivepets/base.html' %}
 {% block title %} Pet Mail {% endblock %}
 
@@ -12,31 +10,31 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="form-group">
-                    <b>Sender: </b> {{ mail.sender.username |capfirst}} <br>
+                    <b>Sender: </b> {{ email.sender.username |capfirst}} <br>
                     <b>Recipients: </b> {{recipients}}  <br>
-                    <b>Subject: </b> {{ mail.subject }} <br>
-                    <b>Received: </b> {{ mail.timestamp}} <br>
+                    <b>Subject: </b> {{ email.subject }} <br>
+                    <b>Received: </b> {{ email.timestamp}} <br>
                     <b>Message: </b> <br>
-                        <textarea readonly class="form-control" rows=6  >{{ mail.message }} </textarea>
+                        <textarea readonly class="form-control" rows=6  >{{ email.message }} </textarea>
                     </div>
-                    <form class="form-inline" action="{% url 'positivepets:mail_create' 'reply' mail.id %}" method="post" enctype="multipart/form-data">
+                    <form class="form-inline" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="reply" formaction="{% url 'positivepets:mail_create' 'none' mail.id %}" class="btn btn-default btn-sm">Back</button>
+                                <button formaction="{% url 'positivepets:email_folder_show' 'inbox' %}" class="btn btn-default btn-sm">Back</button>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="reply" class="btn btn-default btn-sm">Reply</button>
+                                <button onclick="openNewEmailWindow('reply', {{email.id}})" class="btn btn-default btn-sm">Reply</button>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="reply" formaction="{% url 'positivepets:mail_create' 'reply-all' mail.id %}" class="btn btn-default btn-sm">Reply All</button>
+                                <button onclick="openNewEmailWindow('reply_all', {{email.id}})" type="reply" class="btn btn-default btn-sm">Reply All</button>
                             </div>
                         </div>
                     </form>
@@ -45,4 +43,7 @@
         </div>
     </div>
 </div>
+{% load static %}
+<script src="{% static 'positivepets/misc.js' %}">
+</script>
 {% endblock %}

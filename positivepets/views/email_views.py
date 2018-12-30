@@ -1,108 +1,130 @@
-from positivepets.models import Mail, CustomUser, FriendGroup, UserState
+from positivepets.models import Email, CustomUser, FriendGroup, UserState
 from django.views.generic.edit import CreateView
 from datetime import datetime
-from django.db.models import Max
+from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from positivepets.utils.colors import color_map
 from positivepets.utils.utils import get_users
 from django.contrib import messages
+from positivepets.forms import EmailForm
 
 EMAIL_STATUS_UNREAD = 1
 EMAIL_STATUS_READ = 2
 
-class MailCreate(CreateView):
-    model = Mail
-    fields = ['message', 'subject']
+def email_send(request):
+    mx = Email.objects.all().aggregate(Max('msg_id'))
+    msg_id = mx['msg_id__max'] + 1
+    recipient_list = request.POST.getlist('recipients')
+    form = EmailForm
+    for r in recipient_list:
+        m = Email()
+        m.msg_id = msg_id
+        m.timestamp = datetime.now()
+        m.sender = request.user
+        m.status = EMAIL_STATUS_UNREAD
+        m.subject = request.POST['subject']
+        m.message = request.POST['message']
+        m.recipient = CustomUser.objects.get(username=r.lower())
+        m.save()
 
-    def form_valid(self, form):
-        mx = Mail.objects.all().aggregate(Max('msg_id'))
-        msg_id = mx['msg_id__max'] + 1
-        recipient_list = self.request.POST.getlist('recipients')
+    #return Http ResponseRedirect(reverse('positivepets:close', kwargs={'folder':'inbox'}))
+    return render(request, 'positivepets/close_me.html')
 
-        for r in recipient_list:
-            m = Mail()
-            m.msg_id = msg_id
-            m.timestamp = datetime.now()
-            m.sender = self.request.user
-            m.status = EMAIL_STATUS_UNREAD
-            m.subject = form.cleaned_data['subject']
-            m.message = form.cleaned_data['message']
-            m.recipient = CustomUser.objects.get(username=r.lower())
-            m.save()
-
-        messages.success(self.request, "Your email has been sent")
-        return HttpResponseRedirect(reverse('positivepets:mail_create', kwargs=self.kwargs))
-
-    def get_context_data(self, **kwargs):
-        """
-        messages are repeated in the table if there are multiple recipients.
-        id is the auto-incremented primary key of the Mail table.
-        msg_id is the common identifier for several rows if multiple recipients.
-        """
-        context = super(MailCreate, self).get_context_data(**kwargs)
-        context['inbox'] = Mail.objects.filter(recipient=self.request.user).filter(sender__in=get_users(self.request.user.id)).order_by('-timestamp')
-        context['sent_mail'] = Mail.objects.filter(sender=self.request.user).order_by('-timestamp')
-        context['sender'] = self.request.user
-        context['user_list'] = CustomUser.objects.filter(id__in=get_users(self.request.user.id)).exclude(id=self.request.user.id).exclude(username='admin')
-        try:
-            context['color'] = self.request.user.color
-            context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
-        except:
-            context['color'] = 'lightgray'
-            context['button_text_color'] = 'rgb(40,40,40)'
-
-        recipient_list = []
-
-        if self.kwargs['reply_type'] == 'reply-all':
-            id = self.kwargs['id']
-            msg = Mail.objects.get(id=id)
-
-            for item in Mail.objects.filter(msg_id=msg.msg_id):
-                recipient_list.append(item.recipient.id)
-
-            recipient_list.append(msg.sender.id)
-            context['subject'] = msg.subject
-            context['message'] = "\n\n ------------------- \n " + msg.message
-
-        elif self.kwargs['reply_type'] == 'reply':
-            id = self.kwargs['id']
-            msg = Mail.objects.get(id=id)
-            recipient_list.append(msg.sender.id)
-            context['subject'] = msg.subject
-            if msg.message is None:
-                context['message'] = "\n\n ------------------- \n "
-            else:
-                context['message'] = "\n\n ------------------- \n " + msg.message
-        else:
-            context['subject'] = ''
-            context['message'] = ''
-
-        context['recipient_list'] = recipient_list
-
-        # ActiveGroup DropDown List:  1.  get all groups 2. get active group
-        user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=self.request.user.id)
-        selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=self.request.user).ref_id)
-        context['user_friend_groups'] = user_friend_groups
-        context['selected_friend_group'] = selected_friend_group
-
-        return context
-
-
-def mail_view(request, message_num):
-
-    message_list = Mail.objects.filter(recipient=request.user.id).order_by('-timestamp')
-    mail = message_list[int(message_num)]
-    mail.status = EMAIL_STATUS_READ
-    mail.save()
+def email_read_show(request, message_num):
+    message_list = Email.objects.filter(recipient=request.user.id).order_by('-timestamp')
+    email = message_list[int(message_num)]
+    email.status = EMAIL_STATUS_READ
+    email.save()
 
     # take django query_set and turn it into a comma-delimited list of usernames
-    recipient_list = list(Mail.objects.filter(msg_id=mail.msg_id))
+    recipient_list = list(Email.objects.filter(msg_id=email.msg_id))
     my_list  = [o.recipient.username.title() for o in recipient_list]
     recipient_string = ", ".join(my_list)
+    context = {'email': email, 'recipients': recipient_string}
 
+    return render(request, 'positivepets/email_read.html', context)
 
-    context = {'mail': mail, 'recipients': recipient_string}
+def email_compose_show(request, reply_type, email_id):
+    recipient_list = []
+    context = {}
+    if reply_type == 'reply-all':
+        msg = Email.objects.get(id=email_id)
 
-    return render(request, 'positivepets/mail_message_form.html', context)
+        for item in Email.objects.filter(msg_id=msg.msg_id):  #msg_id is a common id for all messages generated in a reply-all
+            recipient_list.append(item.recipient.id)
+
+        recipient_list.append(msg.sender.id)
+        context['subject'] = msg.subject
+        context['message'] = "\n\n <<<<< previous message: >>>>> \n " + msg.message
+
+    elif reply_type == 'reply':
+        id = email_id
+        msg = Email.objects.get(id=id)
+        recipient_list.append(msg.sender.id)
+        context['subject'] = msg.subject
+        if msg.message is None:
+            context['message'] = "\n\n <<<<< previous message: >>>>> \n "
+        else:
+            context['message'] = "\n\n <<<<< previous message: >>>>> \n " + msg.message
+    else:
+        context['subject'] = ''
+        context['message'] = ''
+
+    context['recipient_list'] = recipient_list
+    context['color'] = request.user.color
+    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+
+    # ActiveGroup DropDown List:  1.  get all groups 2. get active group
+    user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=request.user.id)
+    selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
+    context['user_friend_groups'] = user_friend_groups
+    context['selected_friend_group'] = selected_friend_group
+    context['sender'] = request.user
+    context['user_list'] = CustomUser.objects.filter(id__in=get_users(request.user.id)).exclude(id=request.user.id).exclude(
+        username='admin')
+
+    return render(request, 'positivepets/email_compose.html', context)
+
+def email_folder_show(request, folder):
+    context = {'folder':folder}
+
+    context['inbox'] = Email.objects.filter(recipient_id=request.user).filter(sender__in=get_users(request.user.id)).order_by('-timestamp')
+
+    context['color'] = request.user.color
+    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+
+    # ActiveGroup DropDown List:  1.  get all groups 2. get active group
+    user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=request.user.id)
+    selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
+    context['user_friend_groups'] = user_friend_groups
+    context['selected_friend_group'] = selected_friend_group
+
+    # strategy: multi-recipient messages are stored as separate rows (emails) for each recipient, which share a common msg_id.
+    # Need to reduce to one row for display.
+
+    # result is a list of email objects
+    temp_sent_list = Email.objects.filter(sender_id=request.user.id).filter(recipient__in=get_users(request.user.id)).order_by('-timestamp')
+    sent_mail = []
+    this_message = temp_sent_list[0]
+    this_message.recipient.username = ""
+    counter = 0
+    for email in temp_sent_list:
+        if email.msg_id == this_message.msg_id:
+            if counter == 0:
+                this_message.recipient.username = email.recipient.username.title()
+                counter = counter + 1
+            else:
+                this_message.recipient.username = ", ".join([this_message.recipient.username, email.recipient.username.title()])
+                counter = counter + 1
+        else:
+            sent_mail.append(this_message)
+            this_message = email
+            counter = counter + 1
+
+    sent_mail.append(this_message)
+
+    context['sent_mail'] = sent_mail
+
+    return render(request, 'positivepets/email_folder.html', context)

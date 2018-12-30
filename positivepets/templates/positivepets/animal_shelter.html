@@ -10,7 +10,9 @@
             <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
              Welcome to the Animal Shelter
         </span>
+
         <hr style="border-color:gray;">
+
         <div class="row">
             <div class="col-sm-5">
                 <h4>Search for a pet to adopt</h4><br>
@@ -29,9 +31,6 @@
 
                             <div class="col-sm-4">
                                 <select id="animal_type" onchange="fillBreedsJson('{{ json_breeds | escapejs }}')" name="animal_type" style="margin: 0 0 0 10px;">
-                                    <!--{% for name in animal_names %}
-                                        <option> {{name}} </option>
-                                    {% endfor%} -->
                                 </select>
                             </div>
                         </div>
@@ -60,27 +59,30 @@
                                 <button formaction="{% url 'positivepets:do_search' %}" onclick="saveState()" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Search</button>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4>&nbsp &nbsp Or: use your own photo </h4>
+                                <button formaction="{% url 'positivepets:pet_add' %}" onclick="saveState()" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Custom Pet</button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
 
             <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div id="placehere" class="col-sm-4">
-                    <!--<img src="{{user.picture.url}}" style="height:100%; width:100%; margin:0 0 10px 10px; border-radius:5px; border: 5px solid {{color}};">
-                    -->
-                    <input type="image" src="{{user.picture.url}}" id="selected_image" name="selected_image" style="height:100%; width:100%; margin:0 0 10px 10px; border-radius:5px; border: 5px solid {{color}};">
+            {% csrf_token %}
+            <div id="placehere" class="col-sm-4">
 
-                </div>
-                <div class="col-sm-3">
+                <input type="image" src="{% static 'pup.jpg' %}" id="selected_image" name="selected_image" style="height:100%; width:100%; margin:0 0 10px 10px; border-radius:5px; border: 5px solid {{color}};">
 
-                    <input type="hidden" id="selected_animal" name="selected_animal">
-                    <input type="hidden" id="selected_breed" name="selected_breed" >
-                    <input type="hidden" id="selected_image_url" name="url">
-
-                    <input name="adopted_pet_name" id="adopted_pet_name" size="15" placeholder="Name this pet" style="margin: 10px 0 0 10px;">
-                    <button formaction="{% url 'positivepets:shelter_adopt' %}" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Adopt</button>
-                </div>
+            </div>
+            <div class="col-sm-3">
+                <input type="hidden" id="selected_animal" name="selected_animal">
+                <input type="hidden" id="selected_breed" name="selected_breed" >
+                <input type="hidden" id="selected_image_url" name="url">
+                <input name="adopted_pet_name" id="adopted_pet_name" size="15" placeholder="Name this pet" style="margin: 10px 0 0 10px;">
+                <button formaction="{% url 'positivepets:shelter_adopt' %}" style="background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Adopt</button>
+            </div>
             </form>
         </div>
 

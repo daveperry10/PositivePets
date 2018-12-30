@@ -20,12 +20,8 @@ class PetDetailView(generic.DetailView):
         context['owner'] = owner
         context['description'] = description
         context['edit'] = edit
-        try:
-            context['color'] = self.request.user.color
-            context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
-        except:
-            context['color'] = 'lightgray'
-            context['button_text_color'] = 'rgb(40,40,40)'
+        context['color'] = self.request.user.color
+        context['button_text_color'] = color_map[self.request.user.color.lower()]['button_text_color']
 
         return context
 

@@ -86,7 +86,7 @@ class Chat(models.Model):
     def __str__(self):
         return self.comment
 
-class Mail(models.Model):
+class Email(models.Model):
     msg_id = models.IntegerField(default=0)
     timestamp = models.DateTimeField()
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=0,  related_name='as_sender')
@@ -94,8 +94,10 @@ class Mail(models.Model):
     status = models.IntegerField(default=0)
     subject = models.CharField(max_length=100, null=True, blank=True)
     message = models.CharField(max_length=500, null=True, blank=True)
-    def get_absolute_url(self):
-        return reverse('positivepets:mail_create')
+
+    #def get_absolute_url(self):
+        #return reverse('positivepets:email_create ')
+        #return reverse('positivepets:email_create', kwargs={'reply_type':'none', 'id':0})
 
     def __str__(self):
         return self.message

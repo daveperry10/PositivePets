@@ -69,7 +69,7 @@ class UserFormView(View):
 
             if user is not None:
                 if user.is_active:
-                    return redirect('positivepets:profile')
+                    return redirect('/')
 
         return render(request, self.template_name, {'form':form, 'color': request.user.color})
 
@@ -129,6 +129,6 @@ def change_active_group(request,redirect):
         return chat_message_create(request)
     elif redirect == 'email':
         #return MailCreate.as_view()
-        return HttpResponseRedirect(reverse('positivepets:mail_create', kwargs={'id':request.user.id, 'reply_type':'none'}))
+        return HttpResponseRedirect(reverse('positivepets:email_folder_show',kwargs={'folder':'inbox'}))
     if redirect == 'profile':
-        return HttpResponseRedirect(reverse('positivepets:profile'))
+        return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action':'show'}))

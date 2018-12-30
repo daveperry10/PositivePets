@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pet, CustomUser, Mail, Chat
+from .models import Pet, CustomUser, Email, Chat
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
@@ -20,17 +20,6 @@ class CustomUserAdmin(UserAdmin):
     )
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
-
-class CustomUserAdmin(UserAdmin):
-    add_form = CustomUserCreationForm
-    form = CustomUserChangeForm
-    model = CustomUser
-    list_display = ['id', 'username', 'email', 'city', 'picture', 'birthday', 'invitedby']
-
-    fieldsets = (
-        (('User'), {'fields': ('id', 'username', 'email', 'picture', 'city', 'birthday', 'invitedby')}),
-    )
 
 # class CustomUserAdmin(ModelAdmin):
 #     form = CustomUserChangeForm

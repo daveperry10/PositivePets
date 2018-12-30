@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Chat, Pet, Mail
+from .models import Chat, Pet, Email
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -9,28 +9,28 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ('username', 'email', 'city', 'birthday')
+        fields = ('id','username', 'email', 'city', 'birthday')
 
 class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'username', 'city', 'picture', 'birthday', 'color')
+        fields = ('id','email', 'username', 'city', 'picture', 'birthday', 'color')
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password']
+        fields = ['id','username', 'email', 'password']
 
 class ChatMessageForm(forms.ModelForm):
    class Meta:
         model = Chat
         fields = ['comment']
 
-class MailForm(forms.ModelForm):
+class EmailForm(forms.ModelForm):
    class Meta:
-        model = Mail
+        model = Email
         fields = ['message', 'subject']
 
 class PetDescriptionForm(forms.ModelForm):

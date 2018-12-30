@@ -9,7 +9,7 @@ from collections import defaultdict
 from PIL import Image
 import urllib.request
 from positivepets.models import Pet
-
+import uuid
 
 def do_search(request):
     if request.POST:
@@ -36,7 +36,7 @@ def do_search(request):
 
 
 def get_json_info():
-    csv_file = open('static/breeds.csv', 'r')
+    csv_file = open('/static/breeds.csv', 'r')
     reader = csv.DictReader(csv_file)
     animal_names = reader.fieldnames
     breed_dict = defaultdict(list)
@@ -70,7 +70,7 @@ def shelter_adopt(request):
         if url != "":
             path = io.BytesIO(urllib.request.urlopen(url).read())
             img = Image.open(path)
-            pet.picture.name = 'ronald.jpg'
+            pet.picture.name = pet.name + str(uuid.uuid4()) + '.jpg'
             img.save(os.path.join(settings.MEDIA_ROOT, pet.picture.name))
             #img.save(os.path.join(settings.STATIC_ROOT, pet.picture.name), path)
             pet.save()

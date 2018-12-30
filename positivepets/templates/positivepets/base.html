@@ -45,12 +45,12 @@
                     </li>
 
                     <li class="">
-                        <a href="{% url 'positivepets:mail_create' 'none' 0 %}">
+                        <a href="{% url 'positivepets:email_folder_show' 'inbox' %}">
                             <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp; Email
                         </a>
                     </li>
                     <li class="">
-                        <a href="{% url 'positivepets:chatmessage_create' %}">
+                        <a href="{% url 'positivepets:chatmessage_create' 'refresh' %}">
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Chat Room
                         </a>
                     </li>
@@ -77,17 +77,17 @@
 
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
-                    <li class="">
+                    <!--<li class="">
                         <a href="{% url 'positivepets:pet_add' %}">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Pet
                         </a>
-                    </li>
+                    </li> -->
                     <li class="">
                         <a href="{% url 'logout' %}">
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
                         </a>
                     </li>
-                    {% if user.username == 'admin' %}
+                    {% if user.username == 'admin' or user.is_staff %}
                         <li class="">
                             <a href="{% url 'positivepets:register' %}">
                                 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp; New User
@@ -104,11 +104,11 @@
                     </li>
 
                 {% endif %}
-                <li class="">
+                <!--<li class="">
                     <a href="{% url 'positivepets:about' %}">
                         <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span>&nbsp; About
                     </a>
-                </li>
+                </li> -->
                 <li>
                     {% if user.is_authenticated %}
                         <a href="{% url 'positivepets:user_pets' user.id %}">
@@ -125,8 +125,9 @@
 {% block body %}
 {% endblock %}
 
-<br><br>
+
 {% if user.is_authenticated %}
+    <br>
     <span> You are logged in as:
         <b> {{user.username | capfirst}} </b>
     </span>
@@ -135,9 +136,6 @@
         <b> Please log in </b>
     </span>
 {% endif %}
-
-<br>
-
 
 </body>
 </html>

@@ -4,10 +4,12 @@
 {% load staticfiles %}
 {% if user.is_authenticated %}
 
+
     <div class="container" style="border:1px solid #cecece;">
         <div class="row">
             <div class="col-md-9" style="font-size:20pt;">
-                <p style="margin:5px;">{{friend.username | capfirst}}'s Profile<p>
+                <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{user.color}};">
+                {{friend.username | capfirst}}'s Profile
             </div>
             <div class="col-md-3">
                 {% include 'positivepets/friendgroup_picker_template.html' with page='profile'%}
@@ -64,7 +66,15 @@
                         <br> Birthday: {{friend.birthday | date:"F jS"}}
                         <br> Favorite Color: {{color | capfirst}}
                         <!--<br> Invited By: {{friend.invitedby.username | capfirst}}-->
-                        <br>
+                        <br><br>
+
+                        <form class="form-horizontal" action="{% url 'positivepets:user_pets' friend.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                            <button style="width:94%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit" class="btn btn-default">{{friend.username | capfirst}}'s Pets</button>
+
+                        </form>
+
                     </div>
                 </div>  <!end first row inside big middle column>
 
@@ -74,31 +84,26 @@
                     {% if friend.id == user.id %}
                         <form class="form-inline" role="form" enctype="multipart/form-data" action="" method="post" >
                             {% csrf_token %}
+                            <div class="col-sm-12" style="padding: 0px 25px 0 5px;">
+                            <div style="width:100%;">
 
-                            <div class="form-group" style="margin:0px;">
-                                <button formaction="{% url 'positivepets:bio_edit' user.id %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-default" >Edit Bio</button>
-                            </div>
+                                <button  formaction="{% url 'positivepets:bio_edit' user.id %}"
+                                        style="margin:1%; width:22%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                        class="btn btn-default mr-2" >Edit Bio</button>
 
-                            <div class="form-group" style="margin:0px;">
                                 <button formaction="{% url 'positivepets:user_pets' user.id %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;"
-                                        class="btn btn-default" >Edit Pets</button>
-                            </div>
+                                        style="margin:1%; width:22%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;"
+                                        class="btn btn-default mr-2" >Edit Pets</button>
 
-                            <div class="form-group" style="margin:0px;">
                                 <button formaction="{% url 'positivepets:color_change_view' %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                        style="margin:1%; width:22%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
                                         class="btn btn-default">Edit Color</button>
-                            </div>
 
-                            <div class="form-group" style="margin:0px;">
                                 <button formaction="{% url 'positivepets:user_picture_edit' user.id %}"
-                                        style="width:90px; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-default" >Edit Picture</button>
+                                        style="margin:0%; width:22%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                        class="btn btn-defa ult" >Edit Picture</button>
                             </div>
-
+                            </div>
                             {% if action == 'edit_picture' %}
                                 <div class="row">
                                     <div col class="col-sm-7" style="border:1px solid #cecece;">
@@ -154,14 +159,11 @@
         </div>  <!-- end outer row -->
     </div> <!-- end container -->
 
-
-    <br> <br> <br>{{ p.name | capfirst }}
-    {% if user.username == "admin" %}
-        <a href="{% url 'positivepets:test_view' %}"> Test </a>  &nbsp;&nbsp;
-        <a href="/admin/">Admin</a>
-    {% endif %}
+{% if user.username == "admin" %}
+    <a href="/admin/">Admin</a>
+{% endif %}
 
 {% else %}
-   Welcome to Positive Pets.
+    Welcome to Positive Pets.
 {% endif %}
 {% endblock %}
