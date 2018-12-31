@@ -46,7 +46,7 @@
                          <td> <img src="{{item.user.picture.url}}" style=width:30px;height:30px;"></td>
                          <td style="color:{{item.user.color}};"><b> {{item.user.username| capfirst}} </b></td>
                          <td> {{item.comment}} </td>
-                         <td> {{item.timestamp| utc | date:"D, P"}} </td>
+                         <td> {{item.timestamp|date:"SHORT_DATE_FORMAT"}} </td>
                      </tr>
                      {% endfor %}
                  </tbody>
