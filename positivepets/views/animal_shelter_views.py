@@ -9,6 +9,7 @@ from PIL import Image
 import urllib.request
 from positivepets.models import Pet
 import uuid
+from django.conf import settings
 from django.templatetags.static import static
 
 def do_search(request):
@@ -36,8 +37,9 @@ def do_search(request):
 
 
 def get_json_info():
-
-    csv_file = open('static/breeds.csv', 'r')
+    static_root = getattr(settings, "STATIC_ROOT", "")
+    path = os.path.join(static_root, 'breeds.csv')
+    csv_file = open(path, 'r')
     reader = csv.DictReader(csv_file)
     animal_names = reader.fieldnames
     breed_dict = defaultdict(list)
