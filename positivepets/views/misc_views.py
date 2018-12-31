@@ -126,7 +126,7 @@ def change_active_group(request,redirect):
     us.ref_id = int(request.GET['active_friend_group'])
     us.save()
     if redirect == 'chat':
-        return chat_message_create(request)
+        return chat_message_create(request, 'none')
     elif redirect == 'email':
         #return MailCreate.as_view()
         return HttpResponseRedirect(reverse('positivepets:email_folder_show',kwargs={'folder':'inbox'}))

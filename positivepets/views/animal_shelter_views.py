@@ -39,7 +39,8 @@ def do_search(request):
 def get_json_info():
     static_root = getattr(settings, "STATIC_ROOT", "")
     path = os.path.join(static_root, 'breeds.csv')
-    csv_file = open(path, 'r')
+    #csv_file = open(path, 'r')
+    csv_file = open(path, encoding='ISO-8859-1')
     reader = csv.DictReader(csv_file)
     animal_names = reader.fieldnames
     breed_dict = defaultdict(list)
