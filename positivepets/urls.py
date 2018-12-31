@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/pet_description_edit/$', views.pet_detail_views.pet_description_edit, name='pet_description_edit'),
 
     # /positivepets/5/
-    url(r'^pet_comment_message_create/(?P<action>(submit|refresh))/(?P<pet_id>[0-9]+)//$', views.pet_detail_views.pet_comment_message_create, name='pet_comment_message_create'),
+    url(r'^pet_comment_message_create/(?P<action>(submit|refresh))/(?P<pet_id>[0-9]+)/$', views.pet_detail_views.pet_comment_message_create, name='pet_comment_message_create'),
 
 
 # USER PETS #

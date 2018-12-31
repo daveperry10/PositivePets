@@ -84,4 +84,5 @@ def pet_comment_message_create(request, action, pet_id):
     context['description'] = pet.description
     context['owner'] = CustomUser.objects.get(id=pet.user.id)
     context['pet'] = pet
+    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
     return render(request, 'positivepets/pet_detail.html', context)
