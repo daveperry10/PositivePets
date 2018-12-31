@@ -104,7 +104,7 @@ def about_view(request):
     return render(request, 'positivepets/about.html')
 
 
-def change_active_group(request,redirect, pet_id=0):
+def change_active_group(request,redirect, pet_id=1):
     if request.POST:
         try:
             active_group = request.POST['active_friend_group']

@@ -22,14 +22,14 @@ def chat_message_create(request, action):
             msg.user = request.user
             msg.comment = request.POST['textbox']
             msg.group = selected_friend_group
-            msg.pet_id = 0
+            msg.pet_id = 1
             msg.save()
 
     now = datetime.now()    #to_zone = tz.tzlocal()
     to_zone = tz.gettz("America/New_York")
 
     user_list = get_users(request.user.id)
-    comment_list = Chat.objects.filter(user_id__in=user_list).filter(group=selected_friend_group.id).filter(pet_id=0).order_by('-timestamp')[:30]  # no neg indexing
+    comment_list = Chat.objects.filter(user_id__in=user_list).filter(group=selected_friend_group.id).filter(pet_id=1).order_by('-timestamp')[:30]  # no neg indexing
     context['comment_list'] = comment_list
     context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
     for comment in comment_list:
