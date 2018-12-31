@@ -1,20 +1,11 @@
 from django.urls import reverse
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.contrib.auth.models import UserManager
-from django.contrib.auth.models import PermissionsMixin
-from django.core.files.images import ImageFile
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from io import StringIO, BytesIO
 from PIL import Image
-from django.core.files.base import ContentFile
 from django.conf import settings
 import os
 
 class CustomUser(AbstractUser):
-    # add additional fields in here
-    #objects = MyManager
     city = models.CharField(max_length=250, null=True)
     picture = models.FileField(blank=True, null=True)
     birthday = models.DateField(null=True)
@@ -76,6 +67,7 @@ class Chat(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
     timestamp = models.DateTimeField()
     group = models.ForeignKey(FriendGroup, on_delete=models.CASCADE, default=1)
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, default=0)
     def get_absolute_url(self):
         return reverse('positivepets:chatmessage_create')
 

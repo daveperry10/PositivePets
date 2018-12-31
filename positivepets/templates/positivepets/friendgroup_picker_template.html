@@ -1,6 +1,6 @@
 
 <div class="form-inline">
-    <form action="{% url 'positivepets:change_active_group' page %}">
+    <form action="{% url 'positivepets:change_active_group' page pet_id %}">
         <div class="form-group">
             <select name="active_friend_group" class="form-control" style="font-size:12pt; margin:10px 0 0 0;">
                 {% for grp in user_friend_groups %}

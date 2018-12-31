@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^(?P<friend_id>[0-9]+)/bio_edit/$', views.profile_views.bio_edit, name='bio_edit'),
 
     # /positivepets/change_active_group/
-    url(r'^change_active_group/(?P<redirect>(chat|email|profile))/$', views.misc_views.change_active_group, name='change_active_group'),
+    url(r'^change_active_group/(?P<redirect>(chat|email|profile|pet_detail))/(?P<pet_id>[0-9]+)/$', views.misc_views.change_active_group, name='change_active_group'),
 
     # PET DETAIL #
     # /positivepets/71/
@@ -38,17 +38,17 @@ urlpatterns = [
     # /positivepets/5/pet_description_edit/
     url(r'^(?P<pk>[0-9]+)/pet_description_edit/$', views.pet_detail_views.pet_description_edit, name='pet_description_edit'),
 
+    # /positivepets/5/
+    url(r'^pet_comment_message_create/(?P<action>(submit|refresh))/(?P<pet_id>[0-9]+)//$', views.pet_detail_views.pet_comment_message_create, name='pet_comment_message_create'),
+
+
 # USER PETS #
     # /positivepets/user/5/
     url(r'^user/(?P<friend_id>[0-9]+)/$', views.user_pets_views.user_pets_view, name='user_pets'),
 
-    # /positivepets/pet/add/
+    # /positivepets/pet/...
     url(r'pet/add/$', views.user_pets_views.PetCreate.as_view(), name='pet_add'),
-
-    # /positivepets/pet/2/
     url(r'pet/(?P<pk>[0-9]+)/$', views.user_pets_views.PetUpdate.as_view(), name='pet_update'),
-
-    # /positivepets/pet/2/delete/
     url(r'pet/(?P<pk>[0-9]+)/delete/$', views.user_pets_views.PetDelete.as_view(), name='pet_delete'),
 
 # CHAT #
@@ -62,7 +62,7 @@ urlpatterns = [
     url(r'email/compose/(?P<reply_type>(none|reply|reply-all))/(?P<email_id>[0-9]+)/$', views.email_views.email_compose_show, name='email_compose_show'),
     url(r'email/send/$', views.email_views.email_send, name='email_send'),
 
-# ADMIN #
+# USER #
     # /positivepets/register/
     url(r'^register/$', views.misc_views.UserFormView.as_view(), name='register'),
     url(r'^colorchange/$', views.misc_views.color_change_view, name='color_change_view'),
@@ -74,7 +74,7 @@ urlpatterns = [
 
 # ANIMAL SHELTER#
     url(r'^picture_search/$', views.animal_shelter_views.picture_search, name='picture_search'),
-    url(r'^do_search/$', views.animal_shelter_views.do_search, name='do_search'),
+    url(r'^do_google_search/$', views.animal_shelter_views.do_google_search, name='do_google_search'),
     url(r'^shelter_adopt/$', views.animal_shelter_views.shelter_adopt, name='shelter_adopt'),
 
 #ICON

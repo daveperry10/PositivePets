@@ -6,7 +6,20 @@
     <title>   {% block title %} Pet Detail {% endblock %} </title>
 
     <div class="container" style="padding:10px;">
-        <div class="row-md-12">
+        <div class="row">
+        <div class="col-md-7" style="font-size:20pt;">
+            <span style="margin:5px;font-size:20pt;">
+                <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
+                 Welcome to {{pet.name}}'s Page!
+            </span>
+        </div>
+        <div class="col-md-5">
+            {% include 'positivepets/friendgroup_picker_template.html' with page='pet_detail' pet_id=pet.id %}
+        </div>
+        </div>
+        <hr style="border-color:gray;">
+
+        <div class="row">
             <div class="col-sm-4">
                 <img src="{{pet.picture.url}}" class="img-responsive">
                 <h1> {{pet.name}} </h1>
@@ -20,7 +33,7 @@
                 </form>
             </div>
 
-            <div class="col-sm-8">
+            <div class="col-sm-4">
                 <b> Here is some information about {{pet.name}} </b>
                 <br>
                 {% if user.id == owner.id %}
@@ -28,7 +41,7 @@
                         <form class="form-horizontal" action="{% url 'positivepets:pet_description_save' pet.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
-                                <textarea name="bigtext" cols="60" rows="15"> {{description}} </textarea>
+                                <textarea name="bigtext" cols="45" rows="15"> {{description}} </textarea>
                             </div>
 
                             <div>
@@ -49,6 +62,38 @@
 
 
             </div>
+            <div class="col-sm-4">
+                <b> What do you think about {{pet.name}}? </b>
+
+                 <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <textarea  class="form-control" name="textbox" rows="2" placeholder="Type your chat message here" style="margin: 0 10px 0 0px;"> </textarea>
+                        <div class="row">
+                            <button style="margin: 10px 0 0 15px; color:{{button_text_color}};background-color: {{user.color}};" formaction="{% url 'positivepets:pet_comment_message_create' 'submit' pet.id %}" type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
+                </form>
+
+
+                <table style="margin:0 10px 0 0; background-color:white;" class="table table-bordered table-condensed">
+                 <thead style="background-color:lightgray">
+                     <th>Picture</th>
+                     <th>Name</th>
+                     <th>Message</th>
+                 </thead>
+                 <tbody>
+                     {% for item in comment_list %}
+                     <tr>
+                         <td> <img src="{{item.user.picture.url}}" style=width:30px;height:30px;"></td>
+                         <td style="color:{{item.user.color}};"><b> {{item.user.username| capfirst}} </b></td>
+                         <td> {{item.comment}} </td>
+                     </tr>
+                     {% endfor %}
+                 </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
     <br>

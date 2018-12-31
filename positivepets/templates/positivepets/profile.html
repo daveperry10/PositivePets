@@ -12,7 +12,7 @@
                 {{friend.username | capfirst}}'s Profile
             </div>
             <div class="col-md-3">
-                {% include 'positivepets/friendgroup_picker_template.html' with page='profile'%}
+                {% include 'positivepets/friendgroup_picker_template.html' with page='profile' pet_id=0 %}
             </div>
         </div>
 
@@ -25,7 +25,7 @@
                         {% for u in user_list %}
                             <!--<span class="text-nowrap">-->
                             {% if u.username != "admin" %}
-                                        <a style="display:inline-block;" href="{% url 'positivepets:profile' u.id 'show'%}">
+                                        <a style="display:inline-block;text-decoration: none;" href="{% url 'positivepets:profile' u.id 'show'%}">
 
                                             <img class="icon" src="{{u.picture.url}}"
                                                  style="border-radius:5px; margin:7px 7px 0px 7px; padding:0; border-width:5px;border-style:solid; border-color:{{friend.color}};">
@@ -56,6 +56,27 @@
                                 </a>
                             </div>
                         {% endif %}
+
+                            <div style="width:100%;">
+
+                                <button  formaction="{% url 'positivepets:bio_edit' user.id %}"
+                                        style="margin:1% 0.5% 0 1.5%; width:31%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                        class="btn btn-default mr-2" >Bio</button>
+
+                                <button formaction="{% url 'positivepets:color_change_view' %}"
+                                        style="margin:1% 0.5% 0 0; width:31%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                        class="btn btn-default">Color</button>
+
+                                <button formaction="{% url 'positivepets:user_picture_edit' user.id %}"
+                                        style="margin:1% 0 0 0; width:31%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                        class="btn btn-defa ult" >Picture</button>
+                            </div>
+
+
+
+
+
+
                     </div>
                     <div class="col-sm-5 centered">
                         <br>
@@ -85,24 +106,13 @@
                         <form class="form-inline" role="form" enctype="multipart/form-data" action="" method="post" >
                             {% csrf_token %}
                             <div class="col-sm-12" style="padding: 0px 25px 0 5px;">
-                            <div style="width:100%;">
 
-                                <button  formaction="{% url 'positivepets:bio_edit' user.id %}"
-                                        style="margin:1%; width:22%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-default mr-2" >Edit Bio</button>
 
-                                <button formaction="{% url 'positivepets:user_pets' user.id %}"
-                                        style="margin:1%; width:22%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;"
-                                        class="btn btn-default mr-2" >Edit Pets</button>
 
-                                <button formaction="{% url 'positivepets:color_change_view' %}"
-                                        style="margin:1%; width:22%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-default">Edit Color</button>
 
-                                <button formaction="{% url 'positivepets:user_picture_edit' user.id %}"
-                                        style="margin:0%; width:22%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-defa ult" >Edit Picture</button>
-                            </div>
+
+
+
                             </div>
                             {% if action == 'edit_picture' %}
                                 <div class="row">

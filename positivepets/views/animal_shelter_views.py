@@ -2,7 +2,6 @@ import csv, json, io, os, requests
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.conf import settings
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from PIL import Image
@@ -10,9 +9,9 @@ import urllib.request
 from positivepets.models import Pet
 import uuid
 from django.conf import settings
-from django.templatetags.static import static
+from positivepets.utils.colors import color_map
 
-def do_search(request):
+def do_google_search(request):
     if request.POST:
         animal_type = request.POST['animal_type']
         breed = request.POST['breed']
@@ -33,8 +32,10 @@ def do_search(request):
     json_breeds, json_animals = get_json_info()
 
     context = {'json_animals': json_animals, 'json_breeds': json_breeds, "image_list":img_list, 'color':request.user.color}
-    return render(request, 'positivepets/animal_shelter.html', context)
 
+    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+    return render(request, 'positivepets/animal_shelter.html', context)
+    #return render(request, reverse('positivepets:shelter_adopt'))
 
 def get_json_info():
     static_root = getattr(settings, "STATIC_ROOT", "")
@@ -57,6 +58,7 @@ def get_json_info():
 def picture_search(request):
     json_breeds, json_animals = get_json_info()
     context = {'json_animals': json_animals, 'json_breeds':json_breeds, 'color':request.user.color}
+    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
     print(json_animals)
     return render(request, 'positivepets/animal_shelter.html',context)
 
@@ -79,15 +81,12 @@ def shelter_adopt(request):
             #img.save(os.path.join(settings.STATIC_ROOT, pet.picture.name), path)
             pet.save()
             return HttpResponseRedirect(reverse('positivepets:user_pets', kwargs={'friend_id': request.user.id}))
-    #user.picture.save('star_icon.jpg', File(open(os.path.join(settings.STATIC_ROOT, 'star_icon.jpg'), 'rb')))
 
-
-            img = Image.open(self.picture)
-            img.thumbnail((400, 400))
-            file = os.path.join(settings.MEDIA_ROOT, self.picture.name)
-            img.save(file, quality=60)
-
-
+            # img = Image.open(self.picture)
+            # img.thumbnail((400, 400))
+            # file = os.path.join(settings.MEDIA_ROOT, self.picture.name)
+            # img.save(file, quality=60)
 
     # redirect to user_pets with the new pet added
-    return render(request, reverse('positivepets:shelter_adopt'))
+    #return render(request, reverse('positivepets:shelter_adopt'))
+    return HttpResponseRedirect(reverse('positivepets:user_pets', kwargs={'friend_id': request.user.id}))

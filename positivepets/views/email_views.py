@@ -1,13 +1,9 @@
 from positivepets.models import Mail, CustomUser, FriendGroup, UserState
-from django.views.generic.edit import CreateView
 from datetime import datetime
 from django.db.models import Max, Min
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.shortcuts import render
 from positivepets.utils.colors import color_map
 from positivepets.utils.utils import get_users
-from django.contrib import messages
 from positivepets.forms import EmailForm
 
 EMAIL_STATUS_UNREAD = 1

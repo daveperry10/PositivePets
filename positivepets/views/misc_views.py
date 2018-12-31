@@ -104,7 +104,7 @@ def about_view(request):
     return render(request, 'positivepets/about.html')
 
 
-def change_active_group(request,redirect):
+def change_active_group(request,redirect, pet_id=0):
     if request.POST:
         try:
             active_group = request.POST['active_friend_group']
@@ -130,5 +130,7 @@ def change_active_group(request,redirect):
     elif redirect == 'email':
         #return MailCreate.as_view()
         return HttpResponseRedirect(reverse('positivepets:email_folder_show',kwargs={'folder':'inbox'}))
-    if redirect == 'profile':
+    elif redirect == 'profile':
         return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action':'show'}))
+    elif redirect == 'pet_detail':
+        return HttpResponseRedirect(reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'edit': 0}))

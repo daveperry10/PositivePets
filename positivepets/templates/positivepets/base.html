@@ -104,11 +104,11 @@
                     </li>
 
                 {% endif %}
-                <!--<li class="">
+                <li class="">
                     <a href="{% url 'positivepets:about' %}">
                         <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span>&nbsp; About
                     </a>
-                </li> -->
+                </li>
                 <li>
                     {% if user.is_authenticated %}
                         <a href="{% url 'positivepets:user_pets' user.id %}">

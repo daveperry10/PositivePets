@@ -19,8 +19,22 @@ function loadMe(animal_array, breed_dict){
     }
     fillBreeds(breed_dict);
 
-    document.getElementById("selected_animal").value =  animalSelect.value;
-    document.getElementById("selected_breed").value =  breedSelect.value;
+    if (localStorage.getItem("breedSelect")){
+        document.getElementById("breed").value = localStorage.getItem("breedSelect");
+        document.getElementById("selected_breed").value = localStorage.getItem("breedSelect");
+    }
+    else{
+        document.getElementById("breed").value =  breedSelect.value;
+    }
+
+
+    if (localStorage.getItem("animalSelect")){
+        document.getElementById("animal_type").value = localStorage.getItem("animalSelect");
+        document.getElementById("selected_animal").value = localStorage.getItem("animalSelect");
+    }
+    else{
+        document.getElementById("selected_animal").value =  animalSelect.value;
+    }
 }
 
 
