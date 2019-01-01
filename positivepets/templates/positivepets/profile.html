@@ -21,28 +21,25 @@
 
             <! COLUMN 1  -- FRIENDS >
             <div class="col-sm-3">
+                <span style="font-size:14pt;"> Group: {{selected_friend_group.name}} </span><br>
+                {% for u in user_list %}
+                    <!--<span class="text-nowrap">-->
+                    {% if u.username != "admin" %}
+                        <a style="display:inline-block;text-decoration: none;" href="{% url 'positivepets:profile' u.id 'show'%}">
 
-                        {% for u in user_list %}
-                            <!--<span class="text-nowrap">-->
-                            {% if u.username != "admin" %}
-                                        <a style="display:inline-block;text-decoration: none;" href="{% url 'positivepets:profile' u.id 'show'%}">
-
-                                            <img class="icon" src="{{u.picture.url}}"
-                                                 style="border-radius:5px; margin:7px 7px 0px 7px; padding:0; border-width:5px;border-style:solid; border-color:{{friend.color}};">
-                                            <div class="caption">
-                                                &nbsp
-                                                {% if u.id == user.id %}
-                                                    <b> {{ u.username | capfirst }} </b>
-                                                {% else %}
-                                                    {{ u.username | capfirst }}
-                                                {% endif %}
-                                            </div>
-                                        </a>
-
-
-                            {% endif %}
-
-                         {% endfor %}
+                            <img class="icon" src="{{u.picture.url}}"
+                                 style="border-radius:5px; margin:7px 7px 0px 7px; padding:0; border-width:5px;border-style:solid; border-color:{{friend.color}};">
+                            <div class="caption">
+                                &nbsp
+                                {% if u.id == user.id %}
+                                    <b> {{ u.username | capfirst }} </b>
+                                {% else %}
+                                    {{ u.username | capfirst }}
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endif %}
+                 {% endfor %}
             </div>
 
             <!-- COLUMN 2 -- PICTURE -->
@@ -56,65 +53,29 @@
                                 </a>
                             </div>
                         {% endif %}
+                        {% if friend.id == user.id %}
 
-                            <div style="width:100%;">
+                            <form class="form-inline" role="form" enctype="multipart/form-data" action="" method="post" >
+                                {% csrf_token %}
+                                <div class="col-sm-12" style="padding: 0px 25px 0 5px;">
 
-                                <button  formaction="{% url 'positivepets:bio_edit' user.id %}"
-                                        style="margin:1% 0.5% 0 1.5%; width:31%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-default mr-2" >Bio</button>
+                                    <div style="width:100%;">
+                                        <button  formaction="{% url 'positivepets:bio_edit' user.id %}"
+                                                style="margin:1% 0.5% 0 1.5%; width:31%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                                class="btn btn-default mr-2" >Bio</button>
 
-                                <button formaction="{% url 'positivepets:color_change_view' %}"
-                                        style="margin:1% 0.5% 0 0; width:31%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-default">Color</button>
+                                        <button formaction="{% url 'positivepets:color_change_view' %}"
+                                                style="margin:1% 0.5% 0 0; width:31%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                                class="btn btn-default">Color</button>
 
-                                <button formaction="{% url 'positivepets:user_picture_edit' user.id %}"
-                                        style="margin:1% 0 0 0; width:31%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
-                                        class="btn btn-defa ult" >Picture</button>
-                            </div>
-
-
-
-
-
-
-                    </div>
-                    <div class="col-sm-5 centered">
-                        <br>
-                        <span style="font-size:14pt;"> Profile Details </span>
-                        <br>
-                        <br> Name: {{friend.username | capfirst}}
-                        <br> Town: {{friend.city | capfirst}}
-                        <br> Birthday: {{friend.birthday | date:"F jS"}}
-                        <br> Favorite Color: {{color | capfirst}}
-                        <!--<br> Invited By: {{friend.invitedby.username | capfirst}}-->
-                        <br><br>
-
-                        <form class="form-horizontal" action="{% url 'positivepets:user_pets' friend.id %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-
-                            <button style="width:94%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit" class="btn btn-default">{{friend.username | capfirst}}'s Pets</button>
-
-                        </form>
-
-                    </div>
-                </div>  <!end first row inside big middle column>
+                                        <button formaction="{% url 'positivepets:user_picture_edit' user.id %}"
+                                                style="margin:1% 0 0 0; width:31%;  color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit"
+                                                class="btn btn-defa ult" >Picture</button>
+                                    </div>
+                                </div>
 
 
-                <div class="row">
-                    <br>
-                    {% if friend.id == user.id %}
-                        <form class="form-inline" role="form" enctype="multipart/form-data" action="" method="post" >
-                            {% csrf_token %}
-                            <div class="col-sm-12" style="padding: 0px 25px 0 5px;">
-
-
-
-
-
-
-
-                            </div>
-                            {% if action == 'edit_picture' %}
+                                {% if action == 'edit_picture' %}
                                 <div class="row">
                                     <div col class="col-sm-7" style="border:1px solid #cecece;">
                                         <div class="form-group" style="margin:0px;">
@@ -129,34 +90,64 @@
 
                                     </div>
                                 </div>
-                            {% endif %}
-                        </form>
-
-                        {% if action == 'edit_bio' %}
-                            <form class="form-horizontal" action="{% url 'positivepets:bio_save' user.id %}" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <textarea class="form-control" name="bigtext" cols="60" rows="10"> {{friend.bio}} </textarea>
-                                </div>
-
-                                <div  class="form-group">
-                                    <button style="background-color:{{color}};border-color:gray;" type="submit" class="btn btn-default">Save</button>
-                                </div>
+                                {% endif %}
                             </form>
-                        {% else %} <! show display text and edit button>
-                            <br><span style="font-size:14pt;"> All About Me </span> <br><br> {{friend.bio}}
-                        {% endif %}
+                            {% if action == 'edit_bio' %}
+                            <div class="row">
+                                <form class="form-horizontal" action="{% url 'positivepets:bio_save' user.id %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="bigtext" cols="60" rows="10"> {{friend.bio}} </textarea>
+                                    </div>
 
-                    {% else %} <! show display text and edit button>
-                            <p style="margin: 0 0 0 10px; font-size:14pt;"> All About {{friend.username | capfirst}} </p>
-                            <p style="margin: 0 0 0 10px;">{{friend.bio}}</p>
-                    {% endif %}
-                </div>
+                                    <div  class="form-group">
+                                        <button style="background-color:{{color}};border-color:gray;" type="submit" class="btn btn-default">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                            {% else %} <! show display text and edit button>
+                                <br><br><br><span style="font-size:14pt;"> All About Me </span> <br> {{friend.bio}}<br>
+                            {% endif %}
+                        {% endif %} <!-- friend == user -->
+                    </div>
 
+                    <div class="col-sm-5 centered">
+                        <br><br><br>
+                        <span style="font-size:14pt;"> Profile Details </span>
+
+                        <br> Name: {{friend.username | capfirst}}
+                        <br> Town: {{friend.city | capfirst}}
+                        <br> Birthday: {{friend.birthday | date:"F jS"}}
+                        <br> Favorite Color: {{color | capfirst}}
+                        <!--<br> Invited By: {{friend.invitedby.username | capfirst}}-->
+
+
+                        <form class="form-horizontal" action="{% url 'positivepets:user_pets' friend.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                            <button style="width:80%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit" class="btn btn-default">{{friend.username | capfirst}}'s Pets</button>
+
+
+                        </form>
+                        <br>
+                    </div>
+                </div>  <!end first row inside big middle column>
+                {% if friend.id == user.id %}
+
+
+
+
+
+
+                {% else %} <! show display text and edit button>
+                    <p style="margin: 0 0 0 10px; font-size:14pt;"> All About {{friend.username | capfirst}} </p>
+                    <p style="margin: 0 0 0 10px;">{{friend.bio}}</p>
+                {% endif %}
             </div> <!-- end of big middle column -->
 
             <!-- COLUMN 3 -- PETS -->
              <div class="col-sm-2">
+                 <span style="font-size:14pt;"> {{friend.username | capfirst}}'s Pets </span>
                  {% for p in pet_list %}
                      <a href="{% url 'positivepets:pet_detail' p.id '0' %}">
                          <div class="row">

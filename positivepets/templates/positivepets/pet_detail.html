@@ -70,7 +70,7 @@
                     <div class="form-group">
                         <textarea  class="form-control" name="textbox" rows="2" placeholder="Type your chat message here" style="margin: 0 10px 0 0px;"> </textarea>
                         <div class="row">
-                            <button style="margin: 10px 0 0 15px; color:{{button_text_color}};background-color: {{user.color}};" formaction="{% url 'positivepets:pet_comment_message_create' 'submit' pet.id %}" type="submit" class="btn btn-default">Submit</button>
+                            <button style="margin: 10px 0 0 15px; color:{{button_text_color}};background-color: {{owner.color}};" formaction="{% url 'positivepets:pet_comment_message_create' 'submit' pet.id %}" type="submit" class="btn btn-default">Submit</button>
                         </div>
                     </div>
                 </form>
