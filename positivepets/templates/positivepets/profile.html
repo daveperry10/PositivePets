@@ -28,7 +28,7 @@
                         <a style="display:inline-block;text-decoration: none;" href="{% url 'positivepets:profile' u.id 'show'%}">
 
                             <img class="icon" src="{{u.picture.url}}"
-                                 style="border-radius:5px; margin:7px 7px 0px 7px; padding:0; border-width:5px;border-style:solid; border-color:{{friend.color}};">
+                                 style="border-radius:5px; margin:7px 7px 0px 7px; padding:0; border-width:5px;border-style:solid; border-color:{{u.color}};">
                             <div class="caption">
                                 &nbsp
                                 {% if u.id == user.id %}
