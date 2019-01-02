@@ -104,23 +104,26 @@ def email_folder_show(request, folder):
     # result is a list of email objects
     temp_sent_list = Mail.objects.filter(sender_id=request.user.id).filter(recipient__in=get_users(request.user.id)).order_by('-timestamp')
     sent_mail = []
-    this_message = temp_sent_list[0]
-    this_message.recipient.username = ""
-    counter = 0
-    for email in temp_sent_list:
-        if email.msg_id == this_message.msg_id:
-            if counter == 0:
-                this_message.recipient.username = email.recipient.username.title()
-                counter = counter + 1
+    try:
+        this_message = temp_sent_list[0]
+        this_message.recipient.username = ""
+        counter = 0
+        for email in temp_sent_list:
+            if email.msg_id == this_message.msg_id:
+                if counter == 0:
+                    this_message.recipient.username = email.recipient.username.title()
+                    counter = counter + 1
+                else:
+                    this_message.recipient.username = ", ".join([this_message.recipient.username, email.recipient.username.title()])
+                    counter = counter + 1
             else:
-                this_message.recipient.username = ", ".join([this_message.recipient.username, email.recipient.username.title()])
+                sent_mail.append(this_message)
+                this_message = email
                 counter = counter + 1
-        else:
-            sent_mail.append(this_message)
-            this_message = email
-            counter = counter + 1
 
-    sent_mail.append(this_message)
+        sent_mail.append(this_message)
+    except:
+        pass
 
     context['sent_mail'] = sent_mail
 
