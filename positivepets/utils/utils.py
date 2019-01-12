@@ -1,7 +1,8 @@
 from django.db import connection
 from positivepets.models import FriendGroup, UserState
+from positivepets.utils.colors import color_map
 
-def get_users(user_id):
+def get_active_friendgroup(user_id):
     query_string = \
         "select u.id " + \
         "from positivepets_userstate us, positivepets_friendgroupuser fgu, positivepets_customuser u " + \
@@ -15,10 +16,17 @@ def get_users(user_id):
 
     return user_list
 
-#def get_activegroup_select_context(request, context):
-    # # DropDown List:  1.  get all groups 2. get active group
-    # user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id = request.user.id)
-    # selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user = request.user).ref_id)
-    # context['user_friend_groups'] = user_friend_groups
-    # context['selected_friend_group'] = selected_friend_group
-    # return
+
+def add_standard_context(request, context):
+    context['color'] = request.user.color
+    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+    user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=request.user.id)
+    try:
+        selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
+        context['selected_friend_group'] = selected_friend_group
+    except:
+        context['selected_friend_group'] =[]
+
+    context['user_friend_groups'] = user_friend_groups
+
+    return context

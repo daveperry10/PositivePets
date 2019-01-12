@@ -1,7 +1,7 @@
 from positivepets.models import Chat, FriendGroup, UserState
 from datetime import datetime
 from django.shortcuts import render
-from positivepets.utils.utils import get_users
+from positivepets.utils.utils import get_active_friendgroup
 from positivepets.utils.colors import color_map
 from dateutil import tz
 
@@ -28,10 +28,11 @@ def chat_message_create(request, action):
     now = datetime.now()    #to_zone = tz.tzlocal()
     to_zone = tz.gettz("America/New_York")
 
-    user_list = get_users(request.user.id)
+    user_list = get_active_friendgroup(request.user.id)
     comment_list = Chat.objects.filter(user_id__in=user_list).filter(group=selected_friend_group.id).filter(pet_id=1).order_by('-timestamp')[:30]  # no neg indexing
     context['comment_list'] = comment_list
     context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+
     for comment in comment_list:
         comment.timestamp = comment.timestamp.astimezone(to_zone)
 

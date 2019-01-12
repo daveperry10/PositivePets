@@ -1,10 +1,27 @@
-from positivepets.models import Mail, CustomUser, FriendGroup, UserState
+"""
+The email module has four functions:
+    - email_folder_show(request, folder):  show either the inbox or sent mail
+    - email_read_show(request, email_id):  show the email in its own page and mark it read
+    - email_compose_show(request, reply_type, email_id): display a blank email in a pop-out window.
+        - if reply or reply-all, fill in recipients and previous msg/subj
+    - email_send(request): save the new rows down to the DB and close the window
+
+Notes:
+    This doesn't actually send email.  It's just a closed-system toy email built on a single DB table.
+    The table positivepets_mail stores one line for each email, and repeats the whole record for each recipient.
+    msg_id is a common identifier in each of these repeated rows - it is used to collect recipients for 'reply_all'
+        - this will be inefficient when the DB is larger - plan is to restructure to avoid this repetition.
+    each row contains a status that changes from 'unread' (1) to read (2) when it is viewed by the recipient
+    The model name remains "Mail" and not "Email" because of MySQL migration issues
+    This module uses Function Based Views - arbitrary choice just to learn FBV
+"""
+
 from datetime import datetime
-from django.db.models import Max, Min
+from django.db.models import Max
 from django.shortcuts import render
-from positivepets.utils.colors import color_map
-from positivepets.utils.utils import get_users
+from positivepets.models import Mail, CustomUser
 from positivepets.forms import EmailForm
+from positivepets.utils.utils import get_active_friendgroup, add_standard_context
 
 EMAIL_STATUS_UNREAD = 1
 EMAIL_STATUS_READ = 2
@@ -13,118 +30,116 @@ def email_send(request):
     mx = Mail.objects.all().aggregate(Max('msg_id'))
     msg_id = mx['msg_id__max'] + 1
     recipient_list = request.POST.getlist('recipients')
-    form = EmailForm
-    for r in recipient_list:
-        m = Mail()
-        m.msg_id = msg_id
-        m.timestamp = datetime.now()
-        m.sender = request.user
-        m.status = EMAIL_STATUS_UNREAD
-        m.subject = request.POST['subject']
-        m.message = request.POST['message']
-        m.recipient = CustomUser.objects.get(username=r.lower())
-        m.save()
+    form = EmailForm(request.POST)
+    form.fields['recipients'].queryset = CustomUser.objects.filter(id__in=get_active_friendgroup(request.user.id)).exclude(id=request.user.id).exclude(username='admin')
 
-    #return Http ResponseRedirect(reverse('positivepets:close', kwargs={'folder':'inbox'}))
-    return render(request, 'positivepets/close_me.html')
+    if form.is_valid():
+        for r in recipient_list:
+            m = Mail()
+            m.msg_id = msg_id
+            m.timestamp = datetime.now()
+            m.sender = request.user
+            m.status = EMAIL_STATUS_UNREAD
+            m.subject = request.POST['subject']
+            m.message = request.POST['message']
+            m.recipient = CustomUser.objects.get(id=int(r))
+            m.save()
+        return render(request, 'positivepets/close_me.html')
 
-def email_read_show(request, message_num):
-    message_list = Mail.objects.filter(recipient=request.user.id).order_by('-timestamp')
-    #email = message_list[int(message_num)]
-    email = Mail.objects.get(id=message_num)
+    context = add_standard_context(request, {})
+    context['subject'] = request.POST['subject']
+    context['message'] = request.POST['message']
+    context['recipient_list'] = recipient_list
+    context['form'] = form
+
+    return render(request, 'positivepets/email_folder.html', context)
+
+
+def email_read_show(request, email_id):
+    """
+    Show the email on its own page.
+    Change the status in the DB to "read"
+    Make the recipients into a comma-separated list for display
+    """
+
+    email = Mail.objects.get(id=email_id)
     email.status = EMAIL_STATUS_READ
     email.save()
 
-    # take django query_set and turn it into a comma-delimited list of usernames
     recipient_list = list(Mail.objects.filter(msg_id=email.msg_id))
-    my_list  = [o.recipient.username.title() for o in recipient_list]
+    my_list = [o.recipient.username.title() for o in recipient_list]
     recipient_string = ", ".join(my_list)
     context = {'email': email, 'recipients': recipient_string}
 
     return render(request, 'positivepets/email_read.html', context)
 
 def email_compose_show(request, reply_type, email_id):
-    recipient_list = []
-    context = {}
-    if reply_type == 'reply-all':
-        msg = Mail.objects.get(id=email_id)
 
-        for item in Mail.objects.filter(msg_id=msg.msg_id):  #msg_id is a common id for all messages generated in a reply-all
-            recipient_list.append(item.recipient.id)
+    context = add_standard_context(request, {})
+    active_friendgroup_members = CustomUser.objects.filter(id__in=get_active_friendgroup(request.user.id)).exclude(id=request.user.id)
+    context['user_list'] = active_friendgroup_members
+    msg = Mail.objects.get(id=email_id)
 
-        recipient_list.append(msg.sender.id)
-        context['subject'] = msg.subject
-        context['message'] = "\n\n <<<<< previous message: >>>>> \n " + msg.message
+    if reply_type == 'none':
+        form = EmailForm()
+        form.fields['recipients'].queryset = active_friendgroup_members
 
     elif reply_type == 'reply':
-        id = email_id
-        msg = Mail.objects.get(id=id)
-        recipient_list.append(msg.sender.id)
-        context['subject'] = msg.subject
-        if msg.message is None:
-            context['message'] = "\n\n <<<<< previous message: >>>>> \n "
-        else:
-            context['message'] = "\n\n <<<<< previous message: >>>>> \n " + msg.message
+        form = EmailForm(initial={'message': "\n\n <<<<< previous message: >>>>> \n " + msg.message, 'subject': msg.subject})
+        context['recipient_list'] = [msg.sender]
+
     else:
-        context['subject'] = ''
-        context['message'] = ''
+        # 'reply_all'
 
-    context['recipient_list'] = recipient_list
-    context['color'] = request.user.color
-    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+        form = EmailForm(initial={'message': "\n\n <<<<< previous message: >>>>> \n " + msg.message, 'subject': msg.subject})
+        mail_objects = Mail.objects.filter(msg_id=msg.msg_id)
+        recipient_list = [msg.sender]
 
-    # ActiveGroup DropDown List:  1.  get all groups 2. get active group
-    user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=request.user.id)
-    selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
-    context['user_friend_groups'] = user_friend_groups
-    context['selected_friend_group'] = selected_friend_group
-    context['sender'] = request.user
-    context['user_list'] = CustomUser.objects.filter(id__in=get_users(request.user.id)).exclude(id=request.user.id).exclude(
-        username='admin')
+        for m in mail_objects:
+            recipient_list.append(m.recipient)
 
+        context['recipient_list'] = recipient_list
+
+    context['form'] = form
     return render(request, 'positivepets/email_compose.html', context)
 
+
+
 def email_folder_show(request, folder):
-    context = {'folder':folder}
+    """
+    Build recipient list out of multiple email records with common msg_id
+    Build context lists for inbox and sent_mail
+    """
 
-    context['inbox'] = Mail.objects.filter(recipient_id=request.user).filter(sender__in=get_users(request.user.id)).order_by('-timestamp')
+    context = add_standard_context(request, {'folder': folder})
 
-    context['color'] = request.user.color
-    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
-
-    # ActiveGroup DropDown List:  1.  get all groups 2. get active group
-    user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=request.user.id)
-    selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
-    context['user_friend_groups'] = user_friend_groups
-    context['selected_friend_group'] = selected_friend_group
-
-    # strategy: multi-recipient messages are stored as separate rows (emails) for each recipient, which share a common msg_id.
-    # Need to reduce to one row for display.
-
-    # result is a list of email objects
-    temp_sent_list = Mail.objects.filter(sender_id=request.user.id).filter(recipient__in=get_users(request.user.id)).order_by('-timestamp')
-    sent_mail = []
-    try:
-        this_message = temp_sent_list[0]
-        this_message.recipient.username = ""
-        counter = 0
-        for email in temp_sent_list:
-            if email.msg_id == this_message.msg_id:
-                if counter == 0:
-                    this_message.recipient.username = email.recipient.username.title()
-                    counter = counter + 1
+    if folder == 'sent_mail':
+        temp_sent_list = Mail.objects.filter(sender_id=request.user.id).filter(recipient__in=get_active_friendgroup(request.user.id)).order_by('-timestamp')
+        sent_mail = []
+        # fail nicely if there are no sent emails (new user)
+        try:
+            this_message = temp_sent_list[0]
+            this_message.recipient.username = ""
+            counter = 0
+            for email in temp_sent_list:
+                if email.msg_id == this_message.msg_id:
+                    if counter == 0:
+                        this_message.recipient.username = email.recipient.username.title()
+                        counter = counter + 1
+                    else:
+                        this_message.recipient.username = ", ".join([this_message.recipient.username, email.recipient.username.title()])
+                        counter = counter + 1
                 else:
-                    this_message.recipient.username = ", ".join([this_message.recipient.username, email.recipient.username.title()])
+                    sent_mail.append(this_message)
+                    this_message = email
                     counter = counter + 1
-            else:
-                sent_mail.append(this_message)
-                this_message = email
-                counter = counter + 1
 
-        sent_mail.append(this_message)
-    except:
-        pass
+            sent_mail.append(this_message)
+            context['sent_mail'] = sent_mail
+        except:
+            pass
 
-    context['sent_mail'] = sent_mail
+    else:
+        context['inbox'] = Mail.objects.filter(recipient_id=request.user).filter(sender__in=get_active_friendgroup(request.user.id)).order_by('-timestamp')
 
     return render(request, 'positivepets/email_folder.html', context)

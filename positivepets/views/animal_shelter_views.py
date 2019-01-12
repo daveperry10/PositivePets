@@ -16,11 +16,16 @@ def do_google_search(request):
         animal_type = request.POST['animal_type']
         breed = request.POST['breed']
         baby_or_fullgrown = request.POST['baby_or_fullgrown']
-        key_word_string = animal_type+'+' + breed + "+" + baby_or_fullgrown
+
+        if animal_type.lower() in ['dog', 'cat', 'fish']:
+            key_word_string = animal_type + '+' + breed + "+" + baby_or_fullgrown
+        else:
+            key_word_string = breed + "+" + baby_or_fullgrown
 
         user_search_words = request.POST['search_words']
-        user_search_words = '+'.join(user_search_words.split())
-        key_word_string = key_word_string + "+" + user_search_words
+        if user_search_words:
+            user_search_words = ('+'.join(user_search_words.split()) if user_search_words else "")
+            key_word_string = key_word_string + "+" + user_search_words
 
         search_url = "https://www.google.com/search?tbm=isch&q=" + key_word_string + "&safe=active"
         source = requests.get(search_url).text
@@ -65,7 +70,6 @@ def picture_search(request):
 def shelter_adopt(request):
 
     if request.method == 'POST':
-        # create a pet, assign values to it, and save it
         pet = Pet()
         pet.name = request.POST['adopted_pet_name']
         pet.type = request.POST['selected_animal']
@@ -78,15 +82,7 @@ def shelter_adopt(request):
             img = Image.open(path)
             pet.picture.name = pet.name + str(uuid.uuid4()) + '.jpg'
             img.save(os.path.join(settings.MEDIA_ROOT, pet.picture.name))
-            #img.save(os.path.join(settings.STATIC_ROOT, pet.picture.name), path)
             pet.save()
-            return HttpResponseRedirect(reverse('positivepets:user_pets', kwargs={'friend_id': request.user.id}))
+            return HttpResponseRedirect(reverse('positivepets:user_pets_show', kwargs={'friend_id': request.user.id}))
 
-            # img = Image.open(self.picture)
-            # img.thumbnail((400, 400))
-            # file = os.path.join(settings.MEDIA_ROOT, self.picture.name)
-            # img.save(file, quality=60)
-
-    # redirect to user_pets with the new pet added
-    #return render(request, reverse('positivepets:shelter_adopt'))
-    return HttpResponseRedirect(reverse('positivepets:user_pets', kwargs={'friend_id': request.user.id}))
+    return HttpResponseRedirect(reverse('positivepets:user_pets_show', kwargs={'friend_id': request.user.id}))

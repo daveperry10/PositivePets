@@ -7,13 +7,13 @@
 
 <div class="container" style="border:1px solid #cecece;">
     <div class="row">
-        <div class="col-sm-8" style="font-size:20pt;">
+        <div class="col-sm-9" style="font-size:20pt;">
             <span style="margin:5px;font-size:20pt;">
                 <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
-                 Welcome to Email!
+                 Welcome to PetMail!
             </span>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             {% include 'positivepets/friendgroup_picker_template.html' with page='email' pet_id=0%}
         </div>
     </div>
@@ -54,9 +54,9 @@
                              <form class="form-inline" action="{% url 'positivepets:email_read_show' msg.id %}" method="post">
                                 {% csrf_token %}
                                 {% if msg.status == 1 %}
-                                    <button style="width:50; color:{{button_text_color}};background-color: {{user.color}};" type="submit" name="button" class="btn btn-default btn-sm">New</button>
+                                    <button style="width:50px; color:{{button_text_color}};background-color: {{user.color}};" type="submit" name="button" class="btn btn-default btn-sm">New</button>
                                 {% else %}
-                                    <button style="width:50;" type="submit" name="button" class="btn btn-default btn-sm">Read</button>
+                                    <button style="width:50px;" type="submit" name="button" class="btn btn-default  btn-sm">Read</button>
                                 {% endif %}
                              </form>
                          </td>
@@ -92,7 +92,7 @@
                          <td> <img src="{{msg.sender.picture.url}}" style="width:30px;height:30px;"></td>
                          <td style="color:{{msg.sender.color}}"><font size="2">{{msg.recipient.username | capfirst}}</font></td>
                          <td><font size="2">{{msg.subject}}</font></td>
-                         <td><font size="2">{{msg.message}}</font></td>
+                         <td style="word-wrap: break-word; max-width: 500px;"><font size="2">{{msg.message}}</font></td>
                          <td><font size="2">{{msg.timestamp|date:"SHORT_DATE_FORMAT"}}</font></td>
                      </tr>
 

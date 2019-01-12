@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
     invitedby = models.ForeignKey('self', on_delete=models.CASCADE, default=1)
 
     def __str__(self):
-        return self.email
+        return self.username.title()
 
 class FriendGroup(models.Model):
     name = models.CharField(max_length=250)
@@ -43,7 +43,7 @@ class Pet(models.Model):
     description = models.CharField(max_length=250, blank=True, null=True)
 
     def get_absolute_url(self):
-        return reverse('positivepets:pet_detail', kwargs={'pk': self.pk, 'edit': '0'})
+        return reverse('positivepets:pet_detail', kwargs={'pk': self.pk, 'action': 'show'})
 
     def __str__(self):
         return self.name

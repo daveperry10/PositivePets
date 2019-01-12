@@ -132,6 +132,3 @@ function selectChange(){
       //  xhttp.open("GET", "/positivepets/chatroom/new/", true)
         //xhttp.send("daves_get");
 }
-
-
-

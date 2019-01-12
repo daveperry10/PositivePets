@@ -7,13 +7,13 @@
 
     <div class="container" style="padding:10px;">
         <div class="row">
-        <div class="col-md-7" style="font-size:20pt;">
+        <div class="col-md-9" style="font-size:20pt;">
             <span style="margin:5px;font-size:20pt;">
                 <img src="{{owner.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{owner.color}};">
                  Welcome to {{pet.name}}'s Page!
             </span>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-3">
             {% include 'positivepets/friendgroup_picker_template.html' with page='pet_detail' pet_id=pet.id %}
         </div>
         </div>
@@ -23,21 +23,27 @@
             <div class="col-sm-4">
                 <img src="{{pet.picture.url}}" class="img-responsive">
                 <h1> {{pet.name}} </h1>
-                <h3> {{pet.type}} {% if pet.breed %} ({{pet.breed}}) {% endif %} </h3> <br>
+                <h3> {{pet.type}} {% if pet.breed %} ({{pet.breed}}) {% endif %} </h3>
+                <div style="width:75%;">
+                    <form class="form-inline" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button style="width:45%; color:{{button_text_color}}; background-color:{{owner.color}};border-color:gray;" formaction="{% url 'positivepets:user_pets_show' owner.id %}" type="submit" class="btn btn-default">{{owner.username | capfirst}}'s Pets</button>
+                    </form>
 
-                <form class="form-horizontal" action="{% url 'positivepets:user_pets' owner.id %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div>
-                        <button style="color:{{button_text_color}}; background-color:{{owner.color}};border-color:gray;" type="submit" class="btn btn-default">Back to {{owner.username | capfirst}}'s Pets</button>
-                    </div>
-                </form>
+                    <form class="form-inline" action="" method="get" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button style="width:45%; color:{{button_text_color}}; background-color:{{owner.color}};border-color:gray;" formaction="{% url 'positivepets:profile' owner.id 'show' %}" class="btn btn-default">{{owner.username | capfirst}}'s Profile</button>
+                    </form>
+                </div>
+
+
             </div>
 
             <div class="col-sm-4">
                 <b> Here is some information about {{pet.name}} </b>
                 <br>
                 {% if user.id == owner.id %}
-                    {% if edit == '1' %}  <! show edit box and save button>
+                    {% if action == 'edit' %}  <! show edit box and save button>
                         <form class="form-horizontal" action="{% url 'positivepets:pet_description_save' pet.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
@@ -93,7 +99,6 @@
                  </tbody>
                 </table>
             </div>
-
         </div>
     </div>
     <br>

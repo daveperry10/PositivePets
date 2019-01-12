@@ -5,13 +5,13 @@
 {% block body %}
 <div class="container" style="border:1px solid #cecece;">
     <div class="row">
-        <div class="col-md-7" style="font-size:20pt;">
+        <div class="col-md-9" style="font-size:20pt;">
             <span style="margin:5px;font-size:20pt;">
                 <img src="{{user.picture.url}}" class="icon" style="border-radius:5px; border: 5px solid {{color}};">
                  Welcome to the Chat Room!
             </span>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-3">
             {% include 'positivepets/friendgroup_picker_template.html' with page='chat' pet_id=1 %}
         </div>
     </div>

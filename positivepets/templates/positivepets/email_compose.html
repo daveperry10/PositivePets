@@ -1,59 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title> Compose Email </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'positivepets/style.css' %}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  ></script>
+</head>
 
-{% extends 'positivepets/base.html' %}
-{% block title %} Pet Mail {% endblock %}
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
 
+            <!-- Header -->
+            <div class="navbar-header">
+                    <a class="navbar-brand" style="color:{{user.color}};" href="" >Pet Mail</a>
+            </div>
 
-{% block body %}
-
-
-<div class="container" style="border:1px solid #cecece;">
-    <div class="row">
-        <div class="col-sm-5">
-
-            {% if action == 'none' %}
-            <h4>Compose Email Message</h4>
-            <p style="color:crimson;"> Hold down "Ctrl" to select more than one.</p>
-            {% endif %}
-            <form id="email_compose_form" class="form-horizontal" action="{% url 'positivepets:email_send' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                <div class="form-group">
-                    <label for="recipients" class="col-sm-2 control-label">To:</label>
-                    <div class="col-sm-10">
-                        <select multiple class="form-control" id="recipients" name="recipients">
-                            {% for u in user_list %}
-                                {% if u.id in recipient_list %}
-                                    <option selected> {{u.username | capfirst}} </option>
-                                {% else %}
-                                    <option> {{u.username | capfirst}} </option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="subject" class="col-sm-2 control-label">Subject:</label>
-                    <div class="col-sm-10">
-                        <input name="subject" type="text" class="form-control" id="subject" value="{{subject}}">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="message" class="col-sm-2 control-label">Message:</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" rows=6 name="message" id="message"> {{message}} </textarea>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button style="color:{{button_text_color}};background-color: {{user.color}};" type="submit" class="btn btn-default">Send</button>
-                    </div>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
+    </nav>
 
-{% endblock %}
+            <div class="container" style="border:1px solid #cecece;">
+                <div class="row">
+                    <div class="col-sm-5">
+
+                        {% if action == 'none' %}
+                        <h4>Compose Email Message</h4>
+                        {% endif %}
+
+
+                        <div class="form-group">
+                            <form style="display: inline;" class="form-horizontal" action="{% url 'positivepets:email_send' %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label class="control-label">{{ form.recipients.label_tag}} </label><br>
+
+                                {% for r in user_list %}
+                                    <label for="id_recipients_{{forloop.counter0}}">
+                                        {% if r in recipient_list %}
+                                            <input type="checkbox" checked=""  style="width:20px; height:20px; background:white; border-radius:5px;" name="recipients" id="id_recipients_{{forloop.counter0}}" value="{{ r.id }}"> {{r.username}}
+                                        {% else %}
+                                            <input type="checkbox" style="width:20px; height:20px; background:white; border-radius:5px;" name="recipients" id="id_recipients_{{forloop.counter0}}" value="{{ r.id }}"> {{r.username}}
+                                        {% endif %}
+                                        &nbsp &nbsp
+                                    </label>
+                                {% endfor %}
+
+                                <br><br>
+                                {{form.subject.label_tag}}<br>
+                                {{form.subject}}<br><br>
+                                {{form.message.label_tag}}<br>
+                                {{form.message}}<br>
+                                <br>
+                                <button style="width:100px; color:{{button_text_color}}; background-color: {{user.color}};" type="submit" class="btn btn-default">Send</button>
+                            </form>
+                            <form style="display: inline; margin:10px;">
+                                <button  onclick="closeMe()" style=" width:100px; color:{{button_text_color}};background-color: {{user.color}};" type="submit" class="btn btn-default">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            function closeMe(){
+                close()
+            }
+            </script>
+
+</body>

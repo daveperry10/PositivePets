@@ -2,13 +2,12 @@ from django.views.generic import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
 from positivepets.models import CustomUser, UserState, FriendGroup, FriendGroupUser
-from positivepets.forms import CustomUserCreationForm,CustomUserChangePictureForm
+from positivepets.forms import CustomUserCreationForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.files import File
 from django.conf import settings
 import os
-from positivepets.utils.colors import color_map
 from positivepets.views.chat_views import chat_message_create
 
 class UserFormView(View):
@@ -74,31 +73,6 @@ class UserFormView(View):
         return render(request, self.template_name, {'form':form, 'color': request.user.color})
 
 
-def color_change_view(request):
-    try:
-        display_name = color_map[request.user.color.lower()]['display_name']
-    except:
-        display_name = 'Light Gray'
-
-    context = {'color_map': color_map, 'color': request.user.color, 'color_name':display_name}
-    return render(request, 'positivepets/color_change_form.html', context)
-
-def color_save_view(request):
-
-    if request.POST:
-        user = request.user
-        color_display_name = request.POST['color']
-
-
-        for k, v in color_map.items():
-            if v['display_name'] == color_display_name:
-                user.color = k
-
-        user.save()
-
-        return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action': 'show'}))
-
-    return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id': request.user.id, 'action': 'show'}))
 
 def about_view(request):
     return render(request, 'positivepets/about.html')
@@ -106,31 +80,62 @@ def about_view(request):
 
 def change_active_group(request,redirect, pet_id=1):
     if request.POST:
-        try:
-            active_group = request.POST['active_friend_group']
-        except:
-            pass
-
-        #us = UserState.objects.filter(user=request.user).values('name')
+        # try:
+        #     active_group = request.POST['active_friend_group']
+        # except:
+        #     pass
 
         # get the group ids for this user
-        group_ids = FriendGroupUser.objects.filter(user=request.user).values('id')
+        #group_ids = FriendGroupUser.objects.filter(user=request.user).values('id')
 
         # get the groups for those ids (this user's groups)
-        groups = FriendGroup.objects.filter(pk__in=group_ids)
+#        groups = FriendGroup.objects.filter(pk__in=group_ids)
 
         # choose the group id that matches the selected name
         # save that id as ref_id in user_state
 
-    us = UserState.objects.filter(user=request.user).get(name='ActiveGroup')
-    us.ref_id = int(request.GET['active_friend_group'])
-    us.save()
-    if redirect == 'chat':
-        return chat_message_create(request, 'none')
-    elif redirect == 'email':
-        #return MailCreate.as_view()
-        return HttpResponseRedirect(reverse('positivepets:email_folder_show',kwargs={'folder':'inbox'}))
-    elif redirect == 'profile':
-        return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action':'show'}))
-    elif redirect == 'pet_detail':
-        return HttpResponseRedirect(reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'edit': 0}))
+        us = UserState.objects.filter(user=request.user).get(name='ActiveGroup')
+        us.ref_id = int(request.POST['active_friend_group'])
+        us.save()
+
+        if redirect == 'chat':
+            return chat_message_create(request, 'none')
+        elif redirect == 'email':
+            return HttpResponseRedirect(reverse('positivepets:email_folder_show', kwargs={'folder':'inbox'}))
+        elif redirect == 'profile':
+            return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action':'show'}))
+        elif redirect == 'pet_detail':
+            return HttpResponseRedirect(reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'edit': 0}))
+
+
+def group_admin_show(request):
+    d = "select f. *, name, username from positivepets_friendgroupuser f, positivepets_friendgroup" + \
+    "g, positivepets_customuser c where c.id = f.user_id and f.group_id = g.id order by group_id;"
+
+    context ={}
+    context['query_set'] = FriendGroupUser.objects.all().values('user__username', 'group__name').order_by('group__name')
+
+    return render(request, 'positivepets/group_admin.html', context)
+
+
+from positivepets.forms import GroupNewForm
+
+def group_add_view(request):
+
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = GroupNewForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            print(form.cleaned_data['name'])
+            print(form.cleaned_data['owner'])
+            print("is it bound: ", form.is_bound)
+            # redirect to a new URL:
+
+        return HttpResponseRedirect(reverse('positivepets:group_admin_show'))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = GroupNewForm()
+        form.fields['owner'].queryset = CustomUser.objects.all()
+
+    return render(request, 'positivepets/group_admin.html', {'form': form})

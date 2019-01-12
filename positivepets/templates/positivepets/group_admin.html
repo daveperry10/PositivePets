@@ -1,0 +1,29 @@
+{% extends 'positivepets/base.html' %}
+{% block title %} Message Board{% endblock %}
+{% load tz %}
+
+{% block body %}
+
+
+Welcome to the Group Admin Page
+<form action="{% url 'positivepets:group_add_view' %}">
+    <input type="submit" value="Add Group">
+</form>
+
+
+<form action="{% url 'positivepets:group_add_view' %}" method="post">
+    {% csrf_token %}
+    {{ form}}
+    <input type="submit" value="Submit">
+</form>
+
+<br>
+<br>
+
+{% for row in query_set %}
+    <p>{{row.group__name}} {{row.user__username}}</p>
+{% endfor %}
+
+
+
+{% endblock %}
