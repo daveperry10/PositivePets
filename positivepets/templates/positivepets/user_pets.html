@@ -23,13 +23,13 @@
             {% for pet in pet_list %}
 
                 <div class="col-md-4">
-                    <a href="{% url 'positivepets:pet_detail' pet.id '0' %}">
+                    <a href="{% url 'positivepets:pet_detail' pet.id 'show' %}">
                         <img src="{{pet.picture.url}}" class="petpicture">
                     </a>
 
                     <h2> {{ pet.name }} </h2>
 
-                    <a href="{% url 'positivepets:pet_detail' pet.id '0' %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};"> View Details </a>
+                    <a href="{% url 'positivepets:pet_detail' pet.id 'show' %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};"> View Details </a>
                     {% if friend.username == user.username %}
 
                         <a href="{% url 'positivepets:pet_update' pet.id %}" class="btn btn-default btn-sm" style="color:{{button_text_color}}; background-color:{{color}};"> Update </a>

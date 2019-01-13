@@ -1,13 +1,11 @@
 /* client-side functions to populate html select elements for animal shelter page */
 
-
 function loadMe(animal_array, breed_dict){
 
     var animalSelect = this.document.getElementById("animal_type");
     var breedSelect = this.document.getElementById("breed");
 
     var animal = localStorage.getItem("animalSelect")
-    //alert(animal)
 
     for (var i=0; i<animal_array.length; i++){
         var option = this.document.createElement("option");
@@ -27,7 +25,6 @@ function loadMe(animal_array, breed_dict){
         document.getElementById("breed").value =  breedSelect.value;
     }
 
-
     if (localStorage.getItem("animalSelect")){
         document.getElementById("animal_type").value = localStorage.getItem("animalSelect");
         document.getElementById("selected_animal").value = localStorage.getItem("animalSelect");
@@ -37,15 +34,12 @@ function loadMe(animal_array, breed_dict){
     }
 }
 
-
 function fillBreedsJson(jsonObject){
     var breed_dict = JSON.parse(jsonObject)
     fillBreeds(breed_dict)
 }
 
 function fillBreeds(breed_dict){
-    //var jsonObject = JSON.parse('str);
-
     // get the selected animal
     var select_element = document.getElementById("animal_type");
     var animal;
@@ -83,14 +77,17 @@ function fillBreeds(breed_dict){
     }
 }
 
-function makeBig(img_url){
-    //alert("make it big")
+function makeBig(img_url, color){
     var elem = document.createElement("img");
     elem.setAttribute("src",img_url);
-    newstring = "<img src='";
-    fullstring = newstring.concat(img_url).concat("'>");
-    document.getElementById("placehere").innerHTML = fullstring;
+    var string1 = "<img src='";
+    var string2 =  img_url
+    var string3 = "' style='border-radius:5px; border: 5px solid "
+    var string4 = color
+    var string5 = " ; height:100%; width:100%; object-fit: cover;'>"
+    fullstring = string1 + string2 + string3 + string4 + string5;
 
+    document.getElementById("placehere").innerHTML = fullstring;
     document.getElementById("selected_image_url").value =  img_url;
 
 }
@@ -115,20 +112,3 @@ function saveState(){
     document.getElementById("selected_animal").value =  animalSelect.value;
     document.getElementById("selected_breed").value =  breedSelect.value;
     }
-
-function selectChange(){
-    // http request to save the new state variable and load the page with the new friend group filter applied
-    //window.location.replace("/positivepets/chatroom/new/");
-    //window.location.href = "/positivepets/chatroom/new/";
-    //"GET /positivepets/change_active_group/chat/?active_friend_group=2
-    //alert("yo");
-    //var xhttp = new XMLHttpRequest();
-
-  //  xhttp.onreadystatechange = function(){
-   // if (this.readyState == 4 && this.status == 200){
-   //     //document.getElementById("demo").innerHTML = this.responseText;
-   //     }
-
-      //  xhttp.open("GET", "/positivepets/chatroom/new/", true)
-        //xhttp.send("daves_get");
-}

@@ -78,19 +78,19 @@ def email_compose_show(request, reply_type, email_id):
     context = add_standard_context(request, {})
     active_friendgroup_members = CustomUser.objects.filter(id__in=get_active_friendgroup(request.user.id)).exclude(id=request.user.id)
     context['user_list'] = active_friendgroup_members
-    msg = Mail.objects.get(id=email_id)
+
 
     if reply_type == 'none':
         form = EmailForm()
         form.fields['recipients'].queryset = active_friendgroup_members
 
     elif reply_type == 'reply':
+        msg = Mail.objects.get(id=email_id)
         form = EmailForm(initial={'message': "\n\n <<<<< previous message: >>>>> \n " + msg.message, 'subject': msg.subject})
         context['recipient_list'] = [msg.sender]
 
-    else:
-        # 'reply_all'
-
+    else: #reply_type == 'reply_all'
+        msg = Mail.objects.get(id=email_id)
         form = EmailForm(initial={'message': "\n\n <<<<< previous message: >>>>> \n " + msg.message, 'subject': msg.subject})
         mail_objects = Mail.objects.filter(msg_id=msg.msg_id)
         recipient_list = [msg.sender]

@@ -1,9 +1,20 @@
+"""
+Models:
+    - CustomUser: Customized user model to add color, picture, etc. to user.
+    - FriendGroup:  (Family, Friends, etc) defines who user can see and interact with.
+    - FriendGroupUser: mapping of users to groups.  A User can be in many groups.
+    - UserState: Saves the FriendGroup the User currently has chosen as active (by select widget)
+    - Pet
+    - Chat
+    - Mail
+"""
+
+import os
+from PIL import Image
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from PIL import Image
 from django.conf import settings
-import os
 
 class CustomUser(AbstractUser):
     city = models.CharField(max_length=250, null=True)
@@ -27,8 +38,8 @@ class FriendGroupUser(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
 
 class UserState(models.Model):
-    """ Save user state such as which friendgroup the user is looking at so it is consistent across the app
-        Built to scale to save other state variables as they are developed """
+    """ For now this only saves the user's currently selected FriendGroup for consistency across the app
+        Built generically to scale to save other state variables as they are developed """
     name = models.CharField(max_length=50)
     value = models.CharField(max_length=50, null=True)
     ref_id = models.IntegerField(default=0)

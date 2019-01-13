@@ -3,7 +3,6 @@
 {% block body %}
     {% load static %}
 
-
     <div class="container" style="border:1px solid #cecece;">
 
         <span style="margin:5px;font-size:20pt;">
@@ -56,7 +55,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-4">
-                                <button formaction="{% url 'positivepets:do_google_search' %}" onclick="saveState()" style="color:{{button_text_color}};background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Search</button>
+                                <button formaction="{% url 'positivepets:animal_shelter_google_search' %}" onclick="saveState()" style="color:{{button_text_color}};background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Search</button>
                             </div>
                         </div>
                         <div class="row">
@@ -80,8 +79,8 @@
                 <input type="hidden" id="selected_animal" name="selected_animal">
                 <input type="hidden" id="selected_breed" name="selected_breed" >
                 <input type="hidden" id="selected_image_url" name="url">
-                <input name="adopted_pet_name" id="adopted_pet_name" size="15" placeholder="Name this pet" style="margin: 10px 0 0 10px;">
-                <button formaction="{% url 'positivepets:shelter_adopt' %}" style="color:{{button_text_color}}; background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Adopt</button>
+                <input required name="adopted_pet_name" id="adopted_pet_name" size="15" placeholder="Name this pet" style="margin: 10px 0 0 10px;">
+                <button formaction="{% url 'positivepets:animal_shelter_adopt' %}" style="color:{{button_text_color}}; background-color: {{user.color}}; margin: 10px;" type="submit" class="btn btn-default">Adopt</button>
             </div>
             </form>
         </div>
@@ -90,7 +89,7 @@
 
         {% for img in image_list %}
 
-                    <img src={{img}} onclick="makeBig('{{img}}')" onmouseover="mouseOver(this)" onmouseout="mouseOut(this, '{{user.color}}')" style="margin: 3px 0 0 0; border-radius:5px; border: 5px solid {{color}}; height:100px; width:100px; object-fit: cover;">
+                    <img src={{img}} onclick="makeBig('{{img}}', '{{user.color}}')" onmouseover="mouseOver(this)" onmouseout="mouseOut(this, '{{user.color}}')" style="margin: 3px 0 0 0; border-radius:5px; border: 5px solid {{color}}; height:100px; width:100px; object-fit: cover;">
 
         {% endfor %}
     </div>

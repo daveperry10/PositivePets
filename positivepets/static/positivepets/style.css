@@ -1,50 +1,30 @@
-
-/* this was supposed to make the row height the same but only works on IE not Chrome
-.row.display-flex {
-  display: flex;
-  flex-wrap: wrap;
-}
-.row.display-flex > [class*='col-'] {
-  display: flex;
-  flex-direction: column;
-}
-*/
-
+/*
 .hero-image {
     width: 100vw;
     height: 50vh;
-    background-image: url('media/student.jpg');
+    background-image: url('/media/hulk.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
 }
-
+*/
 img{
   height: 250px;
   width: 250px;
 }
+
 .table-condensed{
   font-size: 12px;
 }
-
-.dp-pad{
-  margin: 10px;
-}
-
 body{
   background: url("images/background.jpg");
   margin: 10px 10px 10px 10px;
 }
 
-.yellow{
-color: yellow;
-}
-
 .icon{
   height: 50px;
   width: 50px;
-  /*padding: 0 15px 15px 0;*/
   margin: 5px;
   border-width:5px;
   border-style:solid;
@@ -57,11 +37,6 @@ color: yellow;
   object-fit: cover;
 }
 
-#dave-icon{
-  height: 25px;
-  width: 25px;
-}
-
 .navbar{
     border-radius:0;
 }
@@ -72,7 +47,6 @@ color: yellow;
 }
 
 input[type=submit]{
-  background-color: lightpink;
   padding: 5px;
   color: black;
   width: 100%

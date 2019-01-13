@@ -1,7 +1,6 @@
 /* client-side functions to populate html select elements for animal shelter page */
 
 function openNewEmailWindow(action, email_id){
-    //alert("open");
     if (action == 'reply'){
         window.open("/positivepets/email/compose/reply/" + email_id + "/","New Mail", "width:20, height:20");
     }
@@ -12,7 +11,6 @@ function openNewEmailWindow(action, email_id){
         window.open("/positivepets/email/compose/none/" + email_id + "/","Reply", "width:20, height:20");
     }
 }
-
 
 function getCookie(cname) {
     var name = cname + "=";
@@ -31,12 +29,13 @@ function getCookie(cname) {
 }
 
 
+//values of redirect can be (chat|email|profile|pet_detail))
 function myChangeFunction(user_id,redirect){
     var http = new XMLHttpRequest();
     var group_id = document.getElementById("new_active_group").value
     var csrftoken = getCookie('csrftoken');
     var url = '/positivepets/profile/change_active_group/' + redirect + '/1/';
-    var data = 'active_friend_group=' + group_id; //(chat|email|profile|pet_detail))
+    var data = 'active_friend_group=' + group_id;
 
     http.open('POST', url, true);
     http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -44,11 +43,10 @@ function myChangeFunction(user_id,redirect){
 
     http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 200) {
-            alert("now in new group"); //http.responseText);
+
         }
     }
 
-    //http.send()
     http.send(data);
     location.reload();
 }

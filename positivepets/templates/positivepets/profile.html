@@ -42,6 +42,12 @@
                     </a>
 
                  {% endfor %}
+
+                <br><br> <span style="font-size:14pt;"> Recent Activity </span> <br>
+                {% for row in activity_list %}
+                    {{row}} <br>
+                {% endfor %}
+                <br>
             </div>
 
             <!-- COLUMN 2 -- PICTURE -->
@@ -107,25 +113,28 @@
                                 </form>
                             </div>
                             {% else %} <! show display text and edit button>
-                                <br><br><br><span style="font-size:14pt;"> All About Me </span> <br> {{friend.bio}}<br>
+                               <!-- <br><br><br><span style="font-size:14pt;"> All About Me </span> <br> {{friend.bio}}<br> -->
                             {% endif %}
 
                         {% else %} <! show display text and edit button>
-                            <br>
+                            <!--<br>
                             <p style="margin: 0 0 0 10px; font-size:14pt;"> All About {{friend.username | capfirst}} </p>
-                            <p style="margin: 0 0 0 10px;">{{friend.bio}}</p>
+                            <p style="margin: 0 0 0 10px;">{{friend.bio}}</p> -->
                         {% endif %} <!-- friend == user -->
+                    <br>
                     </div>
 
-                    <div class="col-sm-5 centered">
-                        <br><br><br>
-                        <span style="font-size:14pt;"> Profile Details </span>
+                    <div class="col-sm-5">
 
-                        <br> Name: {{friend.username | capfirst}}
-                        <br> Town: {{friend.city | capfirst}}
-                        <br> Birthday: {{friend.birthday | date:"F jS"}}
-                        <br> Favorite Color: {{color | capfirst}}
+                        <span style="font-size:14pt;">
+                            <p> Profile Details </p>
+                        </span>
 
+                        Name: {{friend.username | capfirst}} <br>
+                        Town: {{friend.city | capfirst}}<br>
+                        Birthday: {{friend.birthday | date:"F jS"}}<br>
+                        Favorite Color: {{color | capfirst}}<br>
+                        <br>
                         <!--<br> Invited By: {{friend.invitedby.username | capfirst}}-->
 
 
@@ -134,12 +143,17 @@
                             <button style="margin:10px 10px 10px 0; width:80%; color:{{button_text_color}}; background-color:{{friend.color}};border-color:gray;" type="submit" class="btn btn-default">{{friend.username | capfirst}}'s Pets</button>
                         </form>
                         <br>
+
+                        {% if friend.id == user.id %}
+                        <span style="font-size:14pt;"> All About Me </span> <br> {{friend.bio}}<br>
+                        {% else %}
+                            <p style="font-size:14pt;"> All About {{friend.username | capfirst}} (by {{friend.username | capfirst}}) </p>
+                            <p>{{friend.bio}}</p>
+                        {% endif %}
+
                     </div>
                 </div>  <!end first row inside big middle column>
-                <br> <span style="font-size:14pt;"> Recent Activity </span> <br>
-                {% for row in activity_list %}
-                    {{row}} <br>
-                {% endfor %}
+
 
             </div> <!-- end of big middle column -->
 

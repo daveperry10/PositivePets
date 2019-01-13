@@ -1,17 +1,15 @@
-import csv, json, io, os, requests
+import csv, json, io, os, uuid, requests, urllib.request
+from collections import defaultdict
+from PIL import Image
+from bs4 import BeautifulSoup
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from bs4 import BeautifulSoup
-from collections import defaultdict
-from PIL import Image
-import urllib.request
-from positivepets.models import Pet
-import uuid
 from django.conf import settings
+from positivepets.models import Pet
 from positivepets.utils.colors import color_map
 
-def do_google_search(request):
+def animal_shelter_google_search(request):
     if request.POST:
         animal_type = request.POST['animal_type']
         breed = request.POST['breed']
@@ -37,15 +35,12 @@ def do_google_search(request):
     json_breeds, json_animals = get_json_info()
 
     context = {'json_animals': json_animals, 'json_breeds': json_breeds, "image_list":img_list, 'color':request.user.color}
-
     context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
     return render(request, 'positivepets/animal_shelter.html', context)
-    #return render(request, reverse('positivepets:shelter_adopt'))
 
 def get_json_info():
     static_root = getattr(settings, "STATIC_ROOT", "")
     path = os.path.join(static_root, 'breeds.csv')
-    #csv_file = open(path, 'r')
     csv_file = open(path, encoding='ISO-8859-1')
     reader = csv.DictReader(csv_file)
     animal_names = reader.fieldnames
@@ -60,14 +55,14 @@ def get_json_info():
     json_animals = json.dumps(animal_names)
     return json_breeds, json_animals
 
-def picture_search(request):
+def animal_shelter_show(request):
     json_breeds, json_animals = get_json_info()
     context = {'json_animals': json_animals, 'json_breeds':json_breeds, 'color':request.user.color}
     context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
     print(json_animals)
     return render(request, 'positivepets/animal_shelter.html',context)
 
-def shelter_adopt(request):
+def animal_shelter_adopt(request):
 
     if request.method == 'POST':
         pet = Pet()

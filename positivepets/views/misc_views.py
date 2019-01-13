@@ -80,20 +80,6 @@ def about_view(request):
 
 def change_active_group(request,redirect, pet_id=1):
     if request.POST:
-        # try:
-        #     active_group = request.POST['active_friend_group']
-        # except:
-        #     pass
-
-        # get the group ids for this user
-        #group_ids = FriendGroupUser.objects.filter(user=request.user).values('id')
-
-        # get the groups for those ids (this user's groups)
-#        groups = FriendGroup.objects.filter(pk__in=group_ids)
-
-        # choose the group id that matches the selected name
-        # save that id as ref_id in user_state
-
         us = UserState.objects.filter(user=request.user).get(name='ActiveGroup')
         us.ref_id = int(request.POST['active_friend_group'])
         us.save()
@@ -105,7 +91,7 @@ def change_active_group(request,redirect, pet_id=1):
         elif redirect == 'profile':
             return HttpResponseRedirect(reverse('positivepets:profile', kwargs={'friend_id':request.user.id, 'action':'show'}))
         elif redirect == 'pet_detail':
-            return HttpResponseRedirect(reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'edit': 0}))
+            return HttpResponseRedirect(reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'action': 'show'}))
 
 
 def group_admin_show(request):
@@ -130,10 +116,9 @@ def group_add_view(request):
             print(form.cleaned_data['name'])
             print(form.cleaned_data['owner'])
             print("is it bound: ", form.is_bound)
-            # redirect to a new URL:
 
         return HttpResponseRedirect(reverse('positivepets:group_admin_show'))
-    # if a GET (or any other method) we'll create a blank form
+
     else:
         form = GroupNewForm()
         form.fields['owner'].queryset = CustomUser.objects.all()

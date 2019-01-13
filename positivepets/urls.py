@@ -52,9 +52,9 @@ urlpatterns = [
     url(r'email/send/$', views.email_views.email_send, name='email_send'),
 
     # ANIMAL SHELTER#
-    url(r'^picture_search/$', views.animal_shelter_views.picture_search, name='picture_search'),
-    url(r'^do_google_search/$', views.animal_shelter_views.do_google_search, name='do_google_search'),
-    url(r'^shelter_adopt/$', views.animal_shelter_views.shelter_adopt, name='shelter_adopt'),
+    url(r'^animal_shelter/$', views.animal_shelter_views.animal_shelter_show, name='animal_shelter_show'),
+    url(r'^animal_shelter/google_search/$', views.animal_shelter_views.animal_shelter_google_search, name='animal_shelter_google_search'),
+    url(r'^animal_shelter/adopt/$', views.animal_shelter_views.animal_shelter_adopt, name='animal_shelter_adopt'),
 
     # ABOUT #
     # /positivepets/about/

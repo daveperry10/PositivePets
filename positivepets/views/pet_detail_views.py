@@ -51,7 +51,7 @@ class PetDetailView(generic.DetailView):
 
 def pet_description_edit(request, pet_id):
     if request.method == 'POST':
-        url = reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'edit': 1})
+        url = reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'action': 'edit'})
         return HttpResponseRedirect(url)
 
 
@@ -62,16 +62,16 @@ def pet_description_save(request, pet_id):
             a = Pet.objects.get(id=pet_id)
             a.description = form.data['bigtext']
             a.save()
-            url = reverse('positivepets:pet_detail', kwargs={'pk': pk, 'edit': 0})
+            url = reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'action': 'show'})
             return HttpResponseRedirect(url)
     else:
         form = PetDescriptionForm()
 
-    return HttpResponseRedirect(reverse('positivepets:pet_detail', kwargs={'pk': pk, 'edit': 0}))
+    return HttpResponseRedirect(reverse('positivepets:pet_detail', kwargs={'pk': pet_id, 'action': 'show'}))
 
 
 def pet_comment_message_create(request, action, pet_id):
-    context = add_standard_context({})
+    context = add_standard_context(request,{})
     selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
     pet = Pet.objects.get(id=pet_id)
 

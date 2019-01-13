@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Count
 from django.shortcuts import render
-from positivepets.models import CustomUser, Pet, Chat, Mail
+from positivepets.models import CustomUser, Pet, Chat, Mail, FriendGroupUser
 from positivepets.forms import CustomUserChangePictureForm, BioForm
 from positivepets.utils import get_active_friendgroup, add_standard_context, color_map
 
@@ -33,18 +33,19 @@ class ProfileView(generic.ListView):
             as_of_date = datetime.now() - timedelta(hours=48)
             pet_comment_list = Chat.objects.filter(timestamp__gte=as_of_date).filter(pet_id__gt=1).filter(pet__user=self.request.user).values('pet__name', 'user__username', 'group__name').annotate(pet_msg_count=Count('id'))
             email_list = Mail.objects.filter(timestamp__gte=as_of_date).filter(recipient=self.request.user).values('sender__username').annotate(email_count=Count('id'))
-            chat_list = Chat.objects.filter(pet_id=1).filter(timestamp__gte=as_of_date).values('user__username', 'group__name').annotate(chat_count=Count('id'))
+            group_ids = FriendGroupUser.objects.filter(user_id=self.request.user.id).values('group_id')
+            chat_list = Chat.objects.filter(pet_id=1).filter(timestamp__gte=as_of_date).filter(group_id__in=group_ids).values('user__username', 'group__name').annotate(chat_count=Count('id'))
 
             for row in pet_comment_list:
                 activity_list.append(row["pet__name"].title() + " has " + str(row["pet_msg_count"]) + " new comment" + ("s" if row["pet_msg_count"]>1 else "") + \
-                                     " from " + row["user__username"].title()  + " in the " + row["group__name"] + " group")
+                                     " from " + row["user__username"].title()  + " in " + row["group__name"])
 
             for row in email_list:
                 activity_list.append(row["sender__username"].title() + " sent you " + str(row["email_count"]) + " email" + ("s" if row["email_count"]>1 else ""))
 
             for row in chat_list:
                 activity_list.append(row["user__username"].title() + " posted " + str(row["chat_count"]) + " chat message" + \
-                                     ("s" if row["chat_count"]>1 else "") + " in the " + row["group__name"] + " group")
+                                     ("s" if row["chat_count"]>1 else "") + " in " + row["group__name"])
 
             context['activity_list'] = activity_list
         return context

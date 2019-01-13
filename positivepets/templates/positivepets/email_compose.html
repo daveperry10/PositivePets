@@ -40,9 +40,9 @@
                                 {% for r in user_list %}
                                     <label for="id_recipients_{{forloop.counter0}}">
                                         {% if r in recipient_list %}
-                                            <input type="checkbox" checked=""  style="width:20px; height:20px; background:white; border-radius:5px;" name="recipients" id="id_recipients_{{forloop.counter0}}" value="{{ r.id }}"> {{r.username}}
+                                            <input type="checkbox" checked=""  style="width:20px; height:20px; background:white; border-radius:5px;" name="recipients" id="id_recipients_{{forloop.counter0}}" value="{{ r.id }}"> {{r.username |capfirst}}
                                         {% else %}
-                                            <input type="checkbox" style="width:20px; height:20px; background:white; border-radius:5px;" name="recipients" id="id_recipients_{{forloop.counter0}}" value="{{ r.id }}"> {{r.username}}
+                                            <input type="checkbox" style="width:20px; height:20px; background:white; border-radius:5px;" name="recipients" id="id_recipients_{{forloop.counter0}}" value="{{ r.id }}"> {{r.username | capfirst}}
                                         {% endif %}
                                         &nbsp &nbsp
                                     </label>
