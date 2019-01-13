@@ -43,10 +43,10 @@ function myChangeFunction(user_id,redirect){
 
     http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 200) {
-
+            location.reload();
         }
     }
 
     http.send(data);
-    location.reload();
+
 }
