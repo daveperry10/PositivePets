@@ -32,7 +32,7 @@ class PetCreate(generic.CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(PetCreate, self).get_context_data(**kwargs)
-        return add_standard_context(self.request, context)
+        return add_standard_context(self.request, context, self.request.user)
 
 class PetUpdate(generic.UpdateView):
     model = Pet
@@ -40,7 +40,7 @@ class PetUpdate(generic.UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(PetUpdate, self).get_context_data(**kwargs)
-        return add_standard_context(self.request, context)
+        return add_standard_context(self.request, context, self.request.user)
 
 class PetDelete(generic.DeleteView):
     model=Pet
@@ -53,14 +53,16 @@ class PetDetailView(generic.DetailView):
     fields = ['description']
 
     def get_context_data(self, **kwargs):
-        context = super(PetDetailView, self).get_context_data(**kwargs)
-        context = add_standard_context(self.request,context)
 
         pet_id = self.kwargs['pk']
         action = self.kwargs['action']
         pet = Pet.objects.get(id=pet_id)
         owner = CustomUser.objects.get(id=pet.user.id)
         description = pet.description
+
+        context = super(PetDetailView, self).get_context_data(**kwargs)
+        context = add_standard_context(self.request, context, owner)
+
         context['owner'] = owner
         context['description'] = description
         context['action'] = action
@@ -98,9 +100,11 @@ def pet_description_save(request, pet_id):
 
 
 def pet_comment_message_create(request, action, pet_id):
-    context = add_standard_context(request,{})
-    selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
+
     pet = Pet.objects.get(id=pet_id)
+    context = add_standard_context(request,{}, pet.user)
+    selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)
+
 
     if action == 'submit':
 
@@ -128,5 +132,5 @@ def pet_comment_message_create(request, action, pet_id):
 def user_pets_show(request, friend_id):
         friend = CustomUser.objects.get(id=friend_id)
         pet_list = Pet.objects.filter(user=friend_id)
-        context = add_standard_context(request, {'friend': friend, 'pet_list': pet_list})
+        context = add_standard_context(request, {'friend': friend, 'pet_list': pet_list}, friend)
         return render(request, 'positivepets/user_pets.html', context)

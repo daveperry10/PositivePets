@@ -22,7 +22,7 @@ class ProfileView(generic.ListView):
             context['color'] = 'lightgray'  # set to avoid error when color is referenced later
         else:
             friend = CustomUser.objects.get(id=self.kwargs['friend_id'])
-            context = add_standard_context(self.request, context)
+            context = add_standard_context(self.request, context, friend)
             context['friend'] = friend
             context['action'] = self.kwargs['action']
             context['pet_list'] = Pet.objects.filter(user=friend.id)

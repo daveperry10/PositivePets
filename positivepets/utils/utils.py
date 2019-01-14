@@ -17,9 +17,9 @@ def get_active_friendgroup(user_id):
     return user_list
 
 
-def add_standard_context(request, context):
-    context['color'] = request.user.color
-    context['button_text_color'] = color_map[request.user.color.lower()]['button_text_color']
+def add_standard_context(request, context, friend):
+    context['color'] = friend.color
+    context['button_text_color'] = color_map[friend.color.lower()]['button_text_color']
     user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=request.user.id)
     try:
         selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=request.user).ref_id)

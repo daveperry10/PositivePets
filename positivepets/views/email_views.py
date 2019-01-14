@@ -46,7 +46,7 @@ def email_send(request):
             m.save()
         return render(request, 'positivepets/close_me.html')
 
-    context = add_standard_context(request, {})
+    context = add_standard_context(request, {}, request.user)
     context['subject'] = request.POST['subject']
     context['message'] = request.POST['message']
     context['recipient_list'] = recipient_list
@@ -75,7 +75,7 @@ def email_read_show(request, email_id):
 
 def email_compose_show(request, reply_type, email_id):
 
-    context = add_standard_context(request, {})
+    context = add_standard_context(request, {}, request.user)
     active_friendgroup_members = CustomUser.objects.filter(id__in=get_active_friendgroup(request.user.id)).exclude(id=request.user.id)
     context['user_list'] = active_friendgroup_members
 
@@ -111,7 +111,7 @@ def email_folder_show(request, folder):
     Build context lists for inbox and sent_mail
     """
 
-    context = add_standard_context(request, {'folder': folder})
+    context = add_standard_context(request, {'folder': folder}, request.user)
 
     if folder == 'sent_mail':
         temp_sent_list = Mail.objects.filter(sender_id=request.user.id).filter(recipient__in=get_active_friendgroup(request.user.id)).order_by('-timestamp')
