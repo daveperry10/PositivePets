@@ -27,6 +27,7 @@ class ProfileView(generic.ListView):
             context['action'] = self.kwargs['action']
             context['pet_list'] = Pet.objects.filter(user=friend.id)
             context['user_list'] = CustomUser.objects.filter(id__in=get_active_friendgroup(self.request.user.id))
+            context['color_display_name'] = color_map[friend.color.lower()]['display_name']
 
             # Build up list of recent activity to display on profile page
             activity_list = []
