@@ -28,17 +28,17 @@ urlpatterns = [
     url(r'^profile/change_active_group/(?P<redirect>(chat|email|profile|pet_detail))/(?P<pet_id>[0-9]+)/$', views.misc_views.change_active_group, name='change_active_group'),
 
     # USER PETS #
-    url(r'^user_pet/(?P<friend_id>[0-9]+)/$', views.user_pets_views.user_pets_show, name='user_pets_show'),
-    url(r'^user_pet/add/$', views.user_pets_views.PetCreate.as_view(), name='pet_add'),
-    url(r'^user_pet/update/(?P<pk>[0-9]+)/$', views.user_pets_views.PetUpdate.as_view(), name='pet_update'),
-    url(r'^user_pet/delete/(?P<pk>[0-9]+)/delete/$', views.user_pets_views.PetDelete.as_view(), name='pet_delete'),
+    url(r'^user_pet/(?P<friend_id>[0-9]+)/$', views.pet_views.user_pets_show, name='user_pets_show'),
+    url(r'^user_pet/add/$', views.pet_views.PetCreate.as_view(), name='pet_add'),
+    url(r'^user_pet/update/(?P<pk>[0-9]+)/$', views.pet_views.PetUpdate.as_view(), name='pet_update'),
+    url(r'^user_pet/delete/(?P<pk>[0-9]+)/delete/$', views.pet_views.PetDelete.as_view(), name='pet_delete'),
 
     # PET DETAIL #
-    url(r'^pet_detail/(?P<pk>[0-9]+)/(?P<action>(edit|show))/$', views.pet_detail_views.PetDetailView.as_view(), name='pet_detail'),
-    url(r'^pet_detail/pet_description_save/(?P<pet_id>[0-9]+)/$', views.pet_detail_views.pet_description_save, name='pet_description_save'),
-    url(r'^pet_detail/pet_description_edit/(?P<pet_id>[0-9]+)/$', views.pet_detail_views.pet_description_edit, name='pet_description_edit'),
+    url(r'^pet_detail/(?P<pk>[0-9]+)/(?P<action>(edit|show))/$', views.pet_views.PetDetailView.as_view(), name='pet_detail'),
+    url(r'^pet_detail/pet_description_save/(?P<pet_id>[0-9]+)/$', views.pet_views.pet_description_save, name='pet_description_save'),
+    url(r'^pet_detail/pet_description_edit/(?P<pet_id>[0-9]+)/$', views.pet_views.pet_description_edit, name='pet_description_edit'),
     url(r'^pet_detail/pet_comment_message_create/(?P<action>(submit|refresh))/(?P<pet_id>[0-9]+)/$',
-        views.pet_detail_views.pet_comment_message_create, name='pet_comment_message_create'),
+        views.pet_views.pet_comment_message_create, name='pet_comment_message_create'),
 
     # CHAT #
     # /positivepets/chatroom/new/

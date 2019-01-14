@@ -37,14 +37,15 @@ class ProfileView(generic.ListView):
             chat_list = Chat.objects.filter(pet_id=1).filter(timestamp__gte=as_of_date).filter(group_id__in=group_ids).values('user__username', 'group__name').annotate(chat_count=Count('id'))
 
             for row in pet_comment_list:
-                activity_list.append(row["pet__name"].title() + " has " + str(row["pet_msg_count"]) + " new comment" + ("s" if row["pet_msg_count"]>1 else "") + \
-                                     " from " + row["user__username"].title()  + " in " + row["group__name"])
+                activity_list.append(row["pet__name"].title() + ": " + str(row["pet_msg_count"]) + " comment" + ("s" if row["pet_msg_count"]>1 else "") + \
+                                     " from " + row["user__username"].title()  + \
+                                      " in " + row["group__name"])
 
             for row in email_list:
-                activity_list.append(row["sender__username"].title() + " sent you " + str(row["email_count"]) + " email" + ("s" if row["email_count"]>1 else ""))
+                activity_list.append(row["sender__username"].title() + " sent " + str(row["email_count"]) + " email" + ("s" if row["email_count"]>1 else ""))
 
             for row in chat_list:
-                activity_list.append(row["user__username"].title() + " posted " + str(row["chat_count"]) + " chat message" + \
+                activity_list.append(row["user__username"].title() + ": " + str(row["chat_count"]) + " chat message" + \
                                      ("s" if row["chat_count"]>1 else "") + " in " + row["group__name"])
 
             context['activity_list'] = activity_list

@@ -1,26 +1,51 @@
 """
-The Pet model is managed through Generic Class Based Views with very little modification.
-
     Classes:
     - PetDetailView(generic.DetailView):
+    - PetCreate(generic.CreateView):
+    - PetUpdate(generic.UpdateView):
+    - PetDelete(generic.DeleteView):
 
-    Functions:
+    Views:
     - pet_description_edit(request, pet_id):
     - pet_description_save(request, pet_id):
     - pet_comment_message_create(request, action, pet_id):
-
+    - user_pets_show(request, friend_id):
 """
 
 from datetime import datetime
-from dateutil import tz
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from positivepets.models import Pet, CustomUser, Chat, FriendGroup, UserState
 from positivepets.forms import PetDescriptionForm
-from positivepets.utils import color_map, get_active_friendgroup, add_standard_context
+from positivepets.utils import get_active_friendgroup, add_standard_context
 
+class PetCreate(generic.CreateView):
+    model = Pet
+    fields = ['name', 'type', 'breed', 'picture']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(PetCreate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(PetCreate, self).get_context_data(**kwargs)
+        return add_standard_context(self.request, context)
+
+class PetUpdate(generic.UpdateView):
+    model = Pet
+    fields = ['name', 'type', 'breed', 'picture']
+
+    def get_context_data(self, **kwargs):
+        context = super(PetUpdate, self).get_context_data(**kwargs)
+        return add_standard_context(self.request, context)
+
+class PetDelete(generic.DeleteView):
+    model=Pet
+    def get_success_url(self):
+        return reverse_lazy('positivepets:user_pets_show', kwargs={'friend_id': self.request.user.id})
 
 class PetDetailView(generic.DetailView):
     model = Pet
@@ -40,6 +65,8 @@ class PetDetailView(generic.DetailView):
         context['description'] = description
         context['action'] = action
 
+        user_friend_groups = FriendGroup.objects.filter(friendgroupuser__user__id=self.request.user.id)
+        context['user_friend_groups'] = user_friend_groups.filter(friendgroupuser__user__id=pet.user.id)
 
         selected_friend_group = FriendGroup.objects.get(id=UserState.objects.get(user=self.request.user).ref_id)
         user_list = get_active_friendgroup(self.request.user.id)
@@ -96,3 +123,10 @@ def pet_comment_message_create(request, action, pet_id):
     context['pet'] = pet
 
     return render(request, 'positivepets/pet_detail.html', context)
+
+
+def user_pets_show(request, friend_id):
+        friend = CustomUser.objects.get(id=friend_id)
+        pet_list = Pet.objects.filter(user=friend_id)
+        context = add_standard_context(request, {'friend': friend, 'pet_list': pet_list})
+        return render(request, 'positivepets/user_pets.html', context)

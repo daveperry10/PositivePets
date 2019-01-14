@@ -30,11 +30,18 @@ function getCookie(cname) {
 
 
 //values of redirect can be (chat|email|profile|pet_detail))
-function myChangeFunction(user_id,redirect){
+function myChangeFunction(pet_id,redirect){
     var http = new XMLHttpRequest();
     var group_id = document.getElementById("new_active_group").value
     var csrftoken = getCookie('csrftoken');
-    var url = '/positivepets/profile/change_active_group/' + redirect + '/1/';
+    if(redirect == 'pet_detail'){
+        var url = '/positivepets/profile/change_active_group/' + redirect + '/' + pet_id + '/';
+    }
+    else{
+        var url = '/positivepets/profile/change_active_group/' + redirect + '/1/';
+    }
+
+
     var data = 'active_friend_group=' + group_id;
 
     http.open('POST', url, true);

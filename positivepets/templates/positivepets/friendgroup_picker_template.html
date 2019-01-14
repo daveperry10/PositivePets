@@ -3,7 +3,7 @@
     <form action="{% url 'positivepets:change_active_group' page pet_id %}" action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
-            <select id="new_active_group" onchange="myChangeFunction({{user.id}}, '{{page}}')" name="active_friend_group" class="form-control" style="font-size:12pt; margin:10px 0 0 0;">
+            <select id="new_active_group" onchange="myChangeFunction({{pet_id}}, '{{page}}')" name="active_friend_group" class="form-control" style="font-size:12pt; margin:10px 0 0 0;">
                 {% for grp in user_friend_groups %}
                     {% if grp.id == selected_friend_group.id %}
                         <option value="{{grp.id}}" selected> {{grp}} </option>
