@@ -14,11 +14,7 @@ def animal_shelter_google_search(request):
         animal_type = request.POST['animal_type']
         breed = request.POST['breed']
         baby_or_fullgrown = request.POST['baby_or_fullgrown']
-
-        if animal_type.lower() in ['dog', 'cat', 'fish']:
-            key_word_string = animal_type + '+' + breed + "+" + baby_or_fullgrown
-        else:
-            key_word_string = breed + "+" + baby_or_fullgrown
+        key_word_string = animal_type + '+' + breed + "+" + baby_or_fullgrown
 
         user_search_words = request.POST['search_words']
         if user_search_words:
